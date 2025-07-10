@@ -11,7 +11,7 @@
 
     <version>1.0.6-SNAPSHOT</version>
     <name>panis-boot-common</name>
-    <artifactId>panis-boot-common</artifactId>
+    <artifactId>dynamic-tp-common</artifactId>
     <description>PanisBoot 后台管理系统 - Common Core 基础模块</description>
 
     <dependencies>

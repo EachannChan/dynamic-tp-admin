@@ -5,7 +5,7 @@
 # Log file
 *.log
 
-panis-boot-logs/*
+logs/*
 
 # BlueJ files
 *.ctxt

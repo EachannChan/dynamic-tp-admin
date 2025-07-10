@@ -20,13 +20,15 @@
     <packaging>pom</packaging>
     <modules>
         <!-- 基础模块 -->
-        <module>panis-boot-common</module>
+        <module>common</module>
         <!-- 基础配置模块 -->
-        <module>panis-boot-infrastructure</module>
+        <module>infrastructure</module>
         <!-- 业务模块 -->
-        <module>panis-boot-modules</module>
+        <module>modules</module>
         <!-- 后台管理 -->
-        <module>panis-boot-admin</module>
+        <module>admin</module>
+        <!-- 测试模块 -->
+        <module>test</module>
     </modules>
 
 
@@ -52,6 +54,8 @@
         <classgraph.version>4.8.179</classgraph.version>
         <snakeyaml.version>2.4</snakeyaml.version>
         <minio.version>8.5.17</minio.version>
+        <sofa-bolt.version>1.6.12</sofa-bolt.version>
+        <sofa-common-tools.version>1.4.0</sofa-common-tools.version>
     </properties>
 
     <dependencyManagement>
@@ -59,22 +63,22 @@
             <!-- Modules -->
             <dependency>
                 <groupId>com.izpan</groupId>
-                <artifactId>panis-boot-common</artifactId>
+                <artifactId>dynamic-tp-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.izpan</groupId>
-                <artifactId>panis-boot-infrastructure</artifactId>
+                <artifactId>dynamic-tp-infrastructure</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.izpan</groupId>
-                <artifactId>panis-boot-modules</artifactId>
+                <artifactId>dynamic-tp-modules</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.izpan</groupId>
-                <artifactId>panis-boot-admin</artifactId>
+                <artifactId>dynamic-tp-admin</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -90,6 +94,18 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jsr310.version}</version>
+            </dependency>
+
+            <!-- 通信 bolt -->
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>bolt</artifactId>
+                <version>${sofa-bolt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa.common</groupId>
+                <artifactId>sofa-common-tools</artifactId>
+                <version>${sofa-common-tools.version}</version>
             </dependency>
 
             <!-- 系统监控 Core -->

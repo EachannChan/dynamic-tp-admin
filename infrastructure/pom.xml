@@ -11,14 +11,14 @@
 
     <version>1.0.6-SNAPSHOT</version>
     <name>panis-boot-infrastructure</name>
-    <artifactId>panis-boot-infrastructure</artifactId>
+    <artifactId>dynamic-tp-infrastructure</artifactId>
     <description>PanisBoot 后台管理系统 - Infrastructure 基础配置</description>
 
     <dependencies>
         <!-- Common Core -->
         <dependency>
             <groupId>com.izpan</groupId>
-            <artifactId>panis-boot-common</artifactId>
+            <artifactId>dynamic-tp-common</artifactId>
         </dependency>
         <!-- SpringBoot -->
         <dependency>
@@ -73,6 +73,15 @@
         <dependency>
             <groupId>com.izpan</groupId>
             <artifactId>panis-boot-starter-excel</artifactId>
+        </dependency>
+        <!-- bolt -->
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>bolt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa.common</groupId>
+            <artifactId>sofa-common-tools</artifactId>
         </dependency>
         <!-- PanisBoot Starter End -->
     </dependencies>
