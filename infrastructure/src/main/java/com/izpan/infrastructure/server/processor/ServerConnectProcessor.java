@@ -1,4 +1,4 @@
-package com.izpan.infrastructure.server;
+package com.izpan.infrastructure.server.processor;
 
 import com.alipay.remoting.Connection;
 import com.alipay.remoting.ConnectionEventProcessor;

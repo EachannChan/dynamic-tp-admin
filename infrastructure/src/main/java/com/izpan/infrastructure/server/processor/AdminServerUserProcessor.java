@@ -1,7 +1,8 @@
-package com.izpan.infrastructure.server;
+package com.izpan.infrastructure.server.processor;
 
 import com.alipay.remoting.BizContext;
 import com.alipay.remoting.rpc.protocol.SyncUserProcessor;
+import com.izpan.infrastructure.server.AdminRequestBody;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

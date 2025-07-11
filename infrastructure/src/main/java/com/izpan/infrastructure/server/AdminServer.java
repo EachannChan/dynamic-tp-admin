@@ -2,6 +2,8 @@ package com.izpan.infrastructure.server;
 
 import com.alipay.remoting.ConnectionEventType;
 import com.alipay.remoting.rpc.RpcServer;
+import com.izpan.infrastructure.server.processor.AdminServerUserProcessor;
+import com.izpan.infrastructure.server.processor.ServerConnectProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,7 +14,7 @@ public class AdminServer {
     private final RpcServer server;
 
     public AdminServer() {
-        this.server = new RpcServer(port,true);
+        this.server = new RpcServer(port, true);
         server.addConnectionEventProcessor(ConnectionEventType.CONNECT, new ServerConnectProcessor());
         server.registerUserProcessor(new AdminServerUserProcessor());
         this.server.startup();

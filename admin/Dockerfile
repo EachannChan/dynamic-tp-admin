@@ -1,7 +1,7 @@
 # 使用eclipse-temurin官方Alpine Linux带JRE的轻量级镜像
 FROM eclipse-temurin:21.0.3_9-jre-alpine
 # 指定维护者信息(可选)
-LABEL maintainer="paynezhuang@gmail.com"
+LABEL maintainer="eachannchan@qq.com"
 # 设置时区
 ENV TZ='Asia/Shanghai'
 RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
