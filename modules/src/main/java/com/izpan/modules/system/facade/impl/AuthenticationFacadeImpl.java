@@ -66,7 +66,7 @@ public class AuthenticationFacadeImpl implements IAuthenticationFacade {
      * @author payne.zhuang
      * @CreateTime 2024-02-04 23:42
      */
-    private static List<SysUserRouteVO.Route> initMenuRoute(Long parentId, List<SysMenuBO> sysMenus,
+    private static List<SysUserRouteVO.Route> initMenuRoute(Long parentId, Set<SysMenuBO> sysMenus,
                                                             Map<Long, List<String>> menuPermissionMap) {
         // 根据 parentId 获取菜单列表
         List<SysMenuBO> parentMenuList = sysMenus.stream()
@@ -142,7 +142,7 @@ public class AuthenticationFacadeImpl implements IAuthenticationFacade {
     public SysUserVO updateCurrentUserInfo(SysUserUpdateCurrentInfoDTO currentInfoDTO) {
         SysUserBO sysUserBO = CglibUtil.convertObj(currentInfoDTO, SysUserBO::new);
         boolean updated = sysUserService.updateCurrentUserInfo(sysUserBO);
-        if (Boolean.FALSE.equals(updated)) {
+        if (!updated) {
             throw new BizException("更新用户信息异常");
         }
         return getCurrentUserInfo();
@@ -154,14 +154,12 @@ public class AuthenticationFacadeImpl implements IAuthenticationFacade {
         try {
             Set<Long> currentUserRoleIds = GlobalUserHolder.getRoleIds();
             // 获取当前用户的菜单列表以及权限按钮列表
-            List<SysMenuBO> sysMenuBOS = Lists.newArrayList();
-            currentUserRoleIds.stream()
-                    .map(sysRoleMenuService::queryMenuListWithRoleId)
-                    .forEach(sysMenuBOS::addAll);
-            List<SysPermissionBO> sysPermissionBOS = Lists.newArrayList();
-            currentUserRoleIds.stream()
-                    .map(sysRolePermissionService::queryPermissionListWithRoleId)
-                    .forEach(sysPermissionBOS::addAll);
+            Set<SysMenuBO> sysMenuBOS = currentUserRoleIds.stream()
+                    .flatMap(roleId -> sysRoleMenuService.queryMenuListWithRoleId(roleId).stream())
+                    .collect(Collectors.toSet());
+            Set<SysPermissionBO> sysPermissionBOS = currentUserRoleIds.stream()
+                    .flatMap(roleId -> sysRolePermissionService.queryPermissionListWithRoleId(roleId).stream())
+                    .collect(Collectors.toSet());
             // 将权限集合分组成菜单对应按钮集合
             Map<Long, List<String>> menuPermissionMap = transform(sysPermissionBOS);
             // 返回路由对象
@@ -184,7 +182,7 @@ public class AuthenticationFacadeImpl implements IAuthenticationFacade {
      * @author payne.zhuang
      * @CreateTime 2024-04-27 19:33
      */
-    private Map<Long, List<String>> transform(List<SysPermissionBO> sysPermissionBOS) {
+    private Map<Long, List<String>> transform(Set<SysPermissionBO> sysPermissionBOS) {
         return sysPermissionBOS.stream()
                 .collect(Collectors.groupingBy(
                         // 以menuId作为分组依据
