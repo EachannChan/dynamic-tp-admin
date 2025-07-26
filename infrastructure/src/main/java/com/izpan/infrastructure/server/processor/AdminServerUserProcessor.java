@@ -1,10 +1,11 @@
 package com.izpan.infrastructure.server.processor;
 
 import com.alipay.remoting.BizContext;
+import com.alipay.remoting.rpc.protocol.RpcRequestCommand;
 import com.alipay.remoting.rpc.protocol.SyncUserProcessor;
-import com.izpan.infrastructure.server.AdminRequestBody;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.dynamictp.common.entity.AdminRequestBody;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -51,7 +52,6 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     public String interest() {
         return AdminRequestBody.class.getName();
     }
-
 
     @Override
     public Executor getExecutor() {

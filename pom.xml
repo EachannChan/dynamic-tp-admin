@@ -56,6 +56,9 @@
         <minio.version>8.5.17</minio.version>
         <sofa-bolt.version>1.6.12</sofa-bolt.version>
         <sofa-common-tools.version>1.4.0</sofa-common-tools.version>
+        <slf4j-api.version>1.7.21</slf4j-api.version>
+        <netty-all.version>4.1.42.Final</netty-all.version>
+        <dynamic-tp-common.version>1.2.3</dynamic-tp-common.version>
     </properties>
 
     <dependencyManagement>
@@ -95,8 +98,23 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jsr310.version}</version>
             </dependency>
-
+            <!--    Dynamic-Tp        -->
+            <dependency>
+                <groupId>org.dromara.dynamictp</groupId>
+                <artifactId>dynamic-tp-common</artifactId>
+                <version>${dynamic-tp-common.version}</version>
+            </dependency>
             <!-- 通信 bolt -->
+<!--            <dependency>-->
+<!--                <groupId>org.slf4j</groupId>-->
+<!--                <artifactId>slf4j-api</artifactId>-->
+<!--                <version>${slf4j-api.version}</version>-->
+<!--            </dependency>-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty-all.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.alipay.sofa</groupId>
                 <artifactId>bolt</artifactId>

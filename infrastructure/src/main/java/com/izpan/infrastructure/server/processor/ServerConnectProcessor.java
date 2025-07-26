@@ -9,6 +9,5 @@ public class ServerConnectProcessor  implements ConnectionEventProcessor {
     @Override
     public void onEvent(String remoteAddress, Connection connection) {
         log.info("DynamicTp admin server connected, remoteAddress: {}", remoteAddress);
-
     }
 }
