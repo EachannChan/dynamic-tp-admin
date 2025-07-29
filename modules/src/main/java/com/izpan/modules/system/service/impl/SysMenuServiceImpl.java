@@ -114,7 +114,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 根据角色保存菜单规则，数据中只存储了菜单，并不存储目录数据，
         // 所以根据 parentId 进行提取所有目录数据，添加到菜单中进行一起返回，形成用户路由
         Set<Long> parentIds = sysMenus.stream().map(SysMenu::getParentId).collect(Collectors.toSet());
-        List<SysMenu> directoryMenu = baseMapper.selectList(new LambdaQueryWrapper<SysMenu>().in(SysMenu::getId, parentIds));
+        List<SysMenu> directoryMenu = baseMapper
+                .selectList(new LambdaQueryWrapper<SysMenu>().in(SysMenu::getId, parentIds));
         directoryMenu.stream()
                 .filter(directory -> sysMenus.stream().noneMatch(menu -> menu.getId().equals(directory.getId())))
                 .forEach(sysMenus::add);

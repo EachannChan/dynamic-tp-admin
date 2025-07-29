@@ -1,7 +1,6 @@
 package com.izpan.infrastructure.server.processor;
 
 import com.alipay.remoting.BizContext;
-import com.alipay.remoting.rpc.protocol.RpcRequestCommand;
 import com.alipay.remoting.rpc.protocol.SyncUserProcessor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +22,48 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
         this.executor = Executors.newSingleThreadExecutor();
     }
 
+    /**
+     * Safely update the remote address
+     * 
+     * @param bizContext business context, may be null
+     * @return updated remote address
+     */
+    private String updateRemoteAddress(BizContext bizContext) {
+        if (bizContext == null) {
+            log.warn("BizContext is null, keeping current remote address: {}", this.remoteAddress);
+            return this.remoteAddress;
+        }
+
+        try {
+            String newAddress = bizContext.getRemoteAddress();
+            if (newAddress != null && !newAddress.trim().isEmpty()) {
+                String oldAddress = this.remoteAddress;
+                this.remoteAddress = newAddress.trim();
+                if (!oldAddress.equals(this.remoteAddress)) {
+                    log.info("Remote address updated from '{}' to '{}'", oldAddress, this.remoteAddress);
+                }
+            } else {
+                log.warn("Remote address from BizContext is null or empty, keeping current: {}", this.remoteAddress);
+            }
+        } catch (Exception e) {
+            log.error("Failed to get remote address from BizContext", e);
+        }
+
+        return this.remoteAddress;
+    }
+
     @Override
     public Object handleRequest(BizContext bizContext, AdminRequestBody adminRequestBody) throws Exception {
-        log.info("DynamicTp admin request received:{}",adminRequestBody.getRequestType().getValue());
-        if (bizContext.isRequestTimeout()) {
-            log.warn("DynamicTp admin request timeout:{}s",bizContext.getClientTimeout());
+        log.info("DynamicTp admin request received:{}", adminRequestBody.getRequestType().getValue());
+
+        // Safely update remote address
+        updateRemoteAddress(bizContext);
+
+        // Safely check timeout status
+        if (bizContext != null && bizContext.isRequestTimeout()) {
+            log.warn("DynamicTp admin request timeout:{}s", bizContext.getClientTimeout());
         }
-        this.remoteAddress = bizContext.getRemoteAddress();
+
         return doHandleRequest(adminRequestBody);
     }
 
@@ -44,7 +78,8 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
             case LOG_MANAGE:
                 return handleLogManageRequest(adminRequestBody);
             default:
-                throw new IllegalArgumentException("DynamicTp admin request type " + adminRequestBody.getRequestType().getValue() + " is not supported");
+                throw new IllegalArgumentException("DynamicTp admin request type "
+                        + adminRequestBody.getRequestType().getValue() + " is not supported");
         }
     }
 
@@ -59,6 +94,7 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     }
 
     private Object handleExecutorMonitorRequest(AdminRequestBody adminRequestBody) {
+
         return null;
     }
 

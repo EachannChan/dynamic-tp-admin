@@ -19,38 +19,38 @@ Panis: 名为 Pan , is Pan 反过来 `Panis`，同译为：面包。
 
 ### 技术选型
 
-| 技术           | 说明        | 版本         |
-|:-------------|:----------|:-----------|
+| 技术         | 说明          | 版本       |
+| :----------- | :------------ | :--------- |
 | Spring Boot  | 核心框架      | 3.5.0      |
-| MyBatis-Plus | 持久层框架     | 3.5.8      |
-| MySQL        | 数据库       | 8.4.0      |
-| Redis        | 缓存        | 7.2.3      |
+| MyBatis-Plus | 持久层框架    | 3.5.8      |
+| MySQL        | 数据库        | 8.4.0      |
+| Redis        | 缓存          | 7.2.3      |
 | Sa-Token     | 鉴权框架      | 1.43.0     |
 | Logback      | 日志管理      | 1.5.18     |
 | Knife4j      | 接口文档      | 4.5.0      |
-| Lombok       | 工具库       | 1.18.38    |
-| Jackson      | JSON解析    | 2.15.4     |
-| Gson         | JSON解析    | 2.12.1     |
-| Guava        | Google工具库 | 33.4.8-jre |
-| Hutool       | 工具库       | 5.8.38     |
+| Lombok       | 工具库        | 1.18.38    |
+| Jackson      | JSON 解析     | 2.15.4     |
+| Gson         | JSON 解析     | 2.12.1     |
+| Guava        | Google 工具库 | 33.4.8-jre |
+| Hutool       | 工具库        | 5.8.38     |
 
 ### 项目源码
 
-| 名称      | 链接                                                                      |
-|:--------|:------------------------------------------------------------------------|
-| 前端      | [Panis-admin](https://github.com/paynezhuang/panis-admin)               |
-| 后端      | [Panis-boot](https://github.com/paynezhuang/panis-boot)                 |
+| 名称           | 链接                                                                    |
+| :------------- | :---------------------------------------------------------------------- |
+| 前端           | [Panis-admin](https://github.com/paynezhuang/panis-admin)               |
+| 后端           | [Panis-boot](https://github.com/paynezhuang/panis-boot)                 |
 | 后端扩展依赖库 | [Panis-boot-starter](https://github.com/paynezhuang/panis-boot-starter) |
 
 ### 项目启动
 
 ##### 前置环境
 
-* **Java** 开发环境 >=JDK 21
-* **Java** 开发工具 IDEA
-* **Maven** 构建依赖环境 >=3.9.6
-* **MySQL** 数据库 >=8.0.35
-* **Redis** 缓存数据库 >=7.2.3
+- **Java** 开发环境 >=JDK 21
+- **Java** 开发工具 IDEA
+- **Maven** 构建依赖环境 >=3.9.6
+- **MySQL** 数据库 >=8.0.35
+- **Redis** 缓存数据库 >=7.2.3
 
 ##### 克隆项目
 
@@ -61,8 +61,8 @@ git clone https://github.com/paynezhuang/panis-boot-starter
 
 ##### 导入启动
 
-1. 将`panis-boot`以及`panis-boot-starter`分别导出到IDEA中，等待 Maven 依赖下载完成
-2. 创建数据库`panis_boot`，导入`panis-boot-doc`项目中的`panis_boot.sql`，文件[暂在QQ群获取](https://github.com/paynezhuang/panis-boot/issues/5)
+1. 将`panis-boot`以及`panis-boot-starter`分别导出到 IDEA 中，等待 Maven 依赖下载完成
+2. 创建数据库`panis_boot`，导入`panis-boot-doc`项目中的`panis_boot.sql`，文件[暂在 QQ 群获取](https://github.com/paynezhuang/panis-boot/issues/5)
 3. 修改`panis-boot`项目中的`application-dev.yml`文件中的`数据库`以及`Redis`连接信息
 4. 启动`PanisBootApplication`类
 5. 看到`---[PanisBoot]-[panis-boot-admin]-启动完成，当前使用的端口:[9999]，环境变量:[mybatis,dev]---`即代表启动成功
@@ -76,7 +76,7 @@ PanisBoot
 │   └── controller  -- 控制层
 ├── panis-boot-infrastructure -- 基础配置
 ├── panis-boot-modules -- 业务模块
-│   └── system 
+│   └── system
 │       └── repository -- 数据交互
 │           └── mapper -- 持久层
 │       └── domain  -- 业务模型
@@ -95,16 +95,17 @@ PanisBoot
 
 #### `common` 和 `infrastructure` 区别
 
-* `common`模块：通常包含通用的工具类、异常定义、常量定义等与业务无关的代码。这些代码可以被整个应用程序共享。
-    - 通用工具类，比如日期处理、字符串处理等
-    - 通用异常定义，比如业务异常、参数校验异常等
-    - 通用常量定义，比如状态码、错误信息等
+- `common`模块：通常包含通用的工具类、异常定义、常量定义等与业务无关的代码。这些代码可以被整个应用程序共享。
 
-* `infrastructure`模块：通常包含与基础设施相关的代码，比如数据库访问、缓存、消息队列、配置管理等。这些代码通常是为了支持业务模块的运行而存在的。
-    - 数据访问相关的代码，比如数据库连接、ORM框架配置、数据源配置等
-    - 缓存相关的代码，比如缓存配置、缓存管理等
-    - 消息队列相关的代码，比如消息生产者、消费者配置等
-    - 配置管理相关的代码，比如配置加载、动态配置更新等
+  - 通用工具类，比如日期处理、字符串处理等
+  - 通用异常定义，比如业务异常、参数校验异常等
+  - 通用常量定义，比如状态码、错误信息等
+
+- `infrastructure`模块：通常包含与基础设施相关的代码，比如数据库访问、缓存、消息队列、配置管理等。这些代码通常是为了支持业务模块的运行而存在的。
+  - 数据访问相关的代码，比如数据库连接、ORM 框架配置、数据源配置等
+  - 缓存相关的代码，比如缓存配置、缓存管理等
+  - 消息队列相关的代码，比如消息生产者、消费者配置等
+  - 配置管理相关的代码，比如配置加载、动态配置更新等
 
 对于静态类、工具类、异常定义等，你可以根据其功能和作用来判断放入`common`还是`infrastructure`
 模块。如果它们是通用的、与业务无关的，可以放入`common`模块；如果它们是为了支持业务模块的基础设施，可以放入`infrastructure`模块。

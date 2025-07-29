@@ -59,6 +59,7 @@
         <slf4j-api.version>1.7.21</slf4j-api.version>
         <netty-all.version>4.1.42.Final</netty-all.version>
         <dynamic-tp-common.version>1.2.3</dynamic-tp-common.version>
+        <hutool.version>5.8.38</hutool.version>
     </properties>
 
     <dependencyManagement>
@@ -160,6 +161,18 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+
+            <!-- Hutool 版本统一管理 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-http</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
 
             <!-- Starter -->
