@@ -14,11 +14,11 @@ import org.dromara.dynamictp.common.entity.ThreadPoolStats;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * 线程池监控 Service 服务实现层
+ * 线程池监控 Service 服务实现层 - 支持多客户端 (Dynamic-TP AdminClient)
  *
  * @Author eachann
  * @ProjectName panis-boot
@@ -86,24 +86,65 @@ public class MonThreadPoolServiceImpl implements IMonThreadPoolService {
   }
 
   /**
-   * 获取线程池数据 - 从dynamic-tp获取真实数据
+   * 获取线程池数据 - 支持多客户端
    */
   private List<ThreadPoolStats> getThreadPoolsData() {
+    // 检查是否有连接的客户端
+    int clientCount = adminServer.getConnectedClientCount();
+    List<ThreadPoolStats> allThreadPools = new ArrayList<>();
     try {
-      Object result = adminServer.requestToClient(AdminRequestTypeEnum.EXECUTOR_MONITOR, null);
-      List<ThreadPoolStats> threadPoolStatsList = (List<ThreadPoolStats>) ((AdminRequestBody) result).deserializeBody();
-      if (threadPoolStatsList != null && !threadPoolStatsList.isEmpty()) {
-        log.info("Successfully retrieved {} thread pool data from dynamic-tp", threadPoolStatsList.size());
-        return threadPoolStatsList;
+      // 向所有客户端广播请求获取线程池数据
+      List<Object> results = adminServer.broadcastToAllClients(
+          AdminRequestTypeEnum.EXECUTOR_MONITOR, null);
+
+      Set<String> connectedClients = adminServer.getConnectedClients();
+
+      // 处理每个客户端的响应
+      for (int i = 0; i < results.size(); i++) {
+        Object result = results.get(i);
+        String clientAddress = connectedClients.toArray(new String[0])[i];
+
+        if (result instanceof AdminRequestBody) {
+          // 处理 Dynamic-TP AdminClient 返回的 AdminRequestBody
+          AdminRequestBody adminResponse = (AdminRequestBody) result;
+          Object responseBody = adminResponse.deserializeBody();
+
+          if (responseBody instanceof List) {
+            @SuppressWarnings("unchecked")
+            List<ThreadPoolStats> clientThreadPools = (List<ThreadPoolStats>) responseBody;
+
+            if (clientThreadPools != null && !clientThreadPools.isEmpty()) {
+              // 为每个线程池添加客户端标识
+              clientThreadPools.forEach(pool -> {
+                // 保持原始PoolName和别名，不添加clientAddress
+              });
+
+              allThreadPools.addAll(clientThreadPools);
+              log.debug("Retrieved {} thread pools from Dynamic-TP AdminClient: {}",
+                  clientThreadPools.size(), clientAddress);
+            }
+          } else {
+            log.warn("Unexpected response body type from Dynamic-TP AdminClient: {}, body type: {}",
+                clientAddress, responseBody != null ? responseBody.getClass().getSimpleName() : "null");
+          }
+
+        } else if (result != null) {
+          log.warn("Unexpected result type from Dynamic-TP AdminClient: {}, result: {}",
+              clientAddress, result.getClass().getSimpleName());
+        } else {
+          log.warn("Null result from Dynamic-TP AdminClient: {}", clientAddress);
+        }
       }
-    } catch (RemotingException | InterruptedException e) {
-      log.error("Failed to get thread pool data from dynamic-tp due to network error:", e);
+
+      if (!allThreadPools.isEmpty()) {
+        log.info("Successfully retrieved {} thread pools from {} Dynamic-TP AdminClients",
+            allThreadPools.size(), clientCount);
+        return allThreadPools;
+      }
     } catch (Exception e) {
-      log.error("Exception occurred while getting thread pool data:", e);
+      log.error("Failed to get thread pool data from Dynamic-TP AdminClients", e);
     }
 
-    // 如果获取数据失败，返回空列表
-    log.warn("Failed to get thread pool data, returning empty list");
-    return new ArrayList<>();
+    return allThreadPools;
   }
 }

@@ -5,7 +5,14 @@ import com.alipay.remoting.ConnectionEventProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ServerConnectProcessor  implements ConnectionEventProcessor {
+public class ServerConnectProcessor implements ConnectionEventProcessor {
+
+    private final AdminServerUserProcessor adminServerUserProcessor;
+
+    public ServerConnectProcessor(AdminServerUserProcessor adminServerUserProcessor) {
+        this.adminServerUserProcessor = adminServerUserProcessor;
+    }
+
     @Override
     public void onEvent(String remoteAddress, Connection connection) {
         log.info("DynamicTp admin server connected, remoteAddress: {}", remoteAddress);

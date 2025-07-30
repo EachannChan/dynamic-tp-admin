@@ -6,62 +6,111 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.dynamictp.common.entity.AdminRequestBody;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody> {
 
     private final ExecutorService executor;
 
-    @Getter
-    private String remoteAddress = "NOT-CONNECT";
+    // 使用线程安全的Set来管理多个客户端连接
+    private final Set<String> connectedClients = ConcurrentHashMap.newKeySet();
+
+    // 线程池名称计数器
+    private final AtomicInteger threadCounter = new AtomicInteger(1);
 
     public AdminServerUserProcessor() {
-        this.executor = Executors.newSingleThreadExecutor();
+        // 使用多线程执行器，支持并发处理多个客户端请求
+        this.executor = new ThreadPoolExecutor(
+                2, // 核心线程数
+                10, // 最大线程数
+                60L, // 空闲线程存活时间
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(100), // 工作队列
+                r -> {
+                    Thread t = new Thread(r, "AdminServerProcessor-" + threadCounter.getAndIncrement());
+                    t.setDaemon(true);
+                    return t;
+                },
+                new ThreadPoolExecutor.CallerRunsPolicy() // 拒绝策略：调用者运行
+        );
     }
 
     /**
-     * Safely update the remote address
+     * 安全地添加客户端连接
      * 
-     * @param bizContext business context, may be null
-     * @return updated remote address
+     * @param bizContext 业务上下文
+     * @return 客户端地址
      */
-    private String updateRemoteAddress(BizContext bizContext) {
+    private String addClientConnection(BizContext bizContext) {
         if (bizContext == null) {
-            log.warn("BizContext is null, keeping current remote address: {}", this.remoteAddress);
-            return this.remoteAddress;
+            log.warn("BizContext is null, cannot add client connection");
+            return null;
         }
 
         try {
-            String newAddress = bizContext.getRemoteAddress();
-            if (newAddress != null && !newAddress.trim().isEmpty()) {
-                String oldAddress = this.remoteAddress;
-                this.remoteAddress = newAddress.trim();
-                if (!oldAddress.equals(this.remoteAddress)) {
-                    log.info("Remote address updated from '{}' to '{}'", oldAddress, this.remoteAddress);
-                }
+            String clientAddress = bizContext.getRemoteAddress();
+            if (clientAddress != null && !clientAddress.trim().isEmpty()) {
+                clientAddress = clientAddress.trim();
+                connectedClients.add(clientAddress);
+                log.info("Client connected: {}, total connected clients: {}", clientAddress, connectedClients.size());
+                return clientAddress;
             } else {
-                log.warn("Remote address from BizContext is null or empty, keeping current: {}", this.remoteAddress);
+                log.warn("Remote address from BizContext is null or empty");
             }
         } catch (Exception e) {
             log.error("Failed to get remote address from BizContext", e);
         }
 
-        return this.remoteAddress;
+        return null;
+    }
+
+    /**
+     * 移除客户端连接
+     * 
+     * @param clientAddress 客户端地址
+     */
+    public void removeClientConnection(String clientAddress) {
+        if (clientAddress != null && connectedClients.remove(clientAddress)) {
+            log.info("Client disconnected: {}, remaining clients: {}", clientAddress, connectedClients.size());
+        }
+    }
+
+    /**
+     * 获取所有已连接的客户端
+     * 
+     * @return 客户端地址集合
+     */
+    public Set<String> getConnectedClients() {
+        return new HashSet<>(connectedClients);
+    }
+
+    /**
+     * 获取第一个可用的客户端地址（用于向后兼容）
+     * 
+     * @return 第一个客户端地址，如果没有则返回默认值
+     */
+    public String getFirstAvailableClient() {
+        return connectedClients.stream().findFirst().orElse("NOT-CONNECT");
     }
 
     @Override
     public Object handleRequest(BizContext bizContext, AdminRequestBody adminRequestBody) throws Exception {
-        log.info("DynamicTp admin request received:{}", adminRequestBody.getRequestType().getValue());
+        log.info("DynamicTp admin request received:{} from client: {}",
+                adminRequestBody.getRequestType().getValue(),
+                bizContext != null ? bizContext.getRemoteAddress() : "unknown");
 
-        // Safely update remote address
-        updateRemoteAddress(bizContext);
+        // 添加客户端连接
+        String clientAddress = addClientConnection(bizContext);
 
-        // Safely check timeout status
+        // 检查超时状态
         if (bizContext != null && bizContext.isRequestTimeout()) {
-            log.warn("DynamicTp admin request timeout:{}s", bizContext.getClientTimeout());
+            log.warn("DynamicTp admin request timeout:{}s from client: {}",
+                    bizContext.getClientTimeout(), clientAddress);
         }
 
         return doHandleRequest(adminRequestBody);
@@ -94,7 +143,6 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     }
 
     private Object handleExecutorMonitorRequest(AdminRequestBody adminRequestBody) {
-
         return null;
     }
 
@@ -110,4 +158,23 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
         return null;
     }
 
+    /**
+     * 关闭处理器，释放资源
+     */
+    @Override
+    public void shutdown() {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+        connectedClients.clear();
+        log.info("AdminServerUserProcessor shutdown completed");
+    }
 }

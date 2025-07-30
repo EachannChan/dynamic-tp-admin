@@ -6,6 +6,7 @@ import com.izpan.modules.monitor.domain.bo.MonThreadPoolBO;
 import org.dromara.dynamictp.common.entity.ThreadPoolStats;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 线程池监控 门面接口层
@@ -55,4 +56,5 @@ public interface IMonThreadPoolFacade {
    * @CreateTime 2024/12/19 - 10:00
    */
   ThreadPoolStats getDetail(String poolName);
+
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.izpan.infrastructure.page.PageQuery;
 import com.izpan.modules.monitor.domain.bo.MonThreadPoolBO;
 import com.izpan.modules.monitor.facade.IMonThreadPoolFacade;
+import com.izpan.infrastructure.server.AdminServer;
 import com.izpan.modules.monitor.service.IMonThreadPoolService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
