@@ -118,6 +118,56 @@ INSERT INTO `man_notify_platform` (`id`, `platform_id`, `platform`, `url_key`, `
 UNLOCK TABLES;
 
 --
+-- Table structure for table `man_notify_item`
+--
+
+DROP TABLE IF EXISTS `man_notify_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `man_notify_item` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `thread_pool_id` bigint NOT NULL COMMENT '线程池ID',
+  `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '通知类型',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用通知',
+  `threshold` int NOT NULL DEFAULT '70' COMMENT '指标检测阈值',
+  `count` int NOT NULL DEFAULT '1' COMMENT '触发告警的次数',
+  `period` int NOT NULL DEFAULT '120' COMMENT '检测周期（秒）',
+  `silence_period` int NOT NULL DEFAULT '120' COMMENT '静默期（秒）',
+  `cluster_limit` int NOT NULL DEFAULT '1' COMMENT '集群通知限制',
+  `receivers` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT 'all' COMMENT '接收者，多个用逗号分隔',
+  `platform_ids` text COLLATE utf8mb4_unicode_ci COMMENT '通知平台ID列表，JSON格式存储',
+  `client_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '客户端ID',
+  `client_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '客户端名称',
+  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ENABLE' COMMENT '配置状态（ENABLE:启用,DISABLE:禁用）',
+  `remark` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_user` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '创建用户名称',
+  `create_user_id` bigint DEFAULT NULL COMMENT '创建用户ID',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_user` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '更新用户名称',
+  `update_user_id` bigint DEFAULT NULL COMMENT '更新用户ID',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  PRIMARY KEY (`id`),
+  KEY `idx_thread_pool_id` (`thread_pool_id`) COMMENT '线程池ID索引',
+  KEY `idx_type` (`type`) COMMENT '通知类型索引',
+  KEY `idx_enabled` (`enabled`) COMMENT '启用状态索引',
+  KEY `idx_status` (`status`) COMMENT '配置状态索引',
+  KEY `idx_client_id` (`client_id`) COMMENT '客户端ID索引',
+  KEY `idx_client_name` (`client_name`) COMMENT '客户端名称索引',
+  KEY `idx_create_time` (`create_time`) COMMENT '创建时间索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='线程池通知配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `man_notify_item`
+--
+
+LOCK TABLES `man_notify_item` WRITE;
+/*!40000 ALTER TABLE `man_notify_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `man_notify_item` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `man_thread_pool`
 --
 

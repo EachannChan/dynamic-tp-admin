@@ -1,17 +1,16 @@
-# PanisAdmin 后台管理系统
+# DynamicTp-Admin 后台管理系统
 
 ![Node](https://img.shields.io/badge/Node-18-blue.svg)
 ![Version](https://img.shields.io/badge/Version-1.0.5-blue.svg)
 [![License](https://img.shields.io/badge/License-Apache%20License%202.0-B9D6AF.svg)](./LICENSE)
 <br/>
 [![Author](https://img.shields.io/badge/Author-paynezhuang-green.svg)](https://github.com/paynezhuang)
-[![Copyright](https://img.shields.io/badge/Copyright-2024%20Zhuang%20Pan%20@PanisAdmin-green.svg)](https://github.com/paynezhuang)
+[![Copyright](https://img.shields.io/badge/Copyright-2024%20Zhuang%20Pan%20@DynamicTp-Admin-green.svg)](https://github.com/paynezhuang)
 
 ### 项目简介
 
-Panis: 名为 Pan , is Pan 反过来 `Panis`，同译为：面包。
 
-[`PanisAdmin`](https://github.com/paynezhuang/panis-admin) 基于 [`SoybeanAdmin`](https://github.com/soybeanjs/soybean-admin) 二次修改而来。它是一个清新优雅、高颜值且功能强大的后台管理模板，采用`Naive UI`组件库，并最新的前端技术栈，包括 Vue3, Vite5, TypeScript, Pinia 和 UnoCSS。它内置了丰富的主题配置和组件，代码规范严谨，实现了自动化的文件路由系统。`PanisAdmin` 为您提供了一站式的后台管理解决方案，无需额外配置，开箱即用。同样是一个快速学习前沿技术的最佳实践。
+[`DynamicTp-Admin`](https://github.com/paynezhuang/panis-admin) 基于 [`SoybeanAdmin`](https://github.com/soybeanjs/soybean-admin) 二次修改而来。它是一个清新优雅、高颜值且功能强大的后台管理模板，采用`Naive UI`组件库，并最新的前端技术栈，包括 Vue3, Vite5, TypeScript, Pinia 和 UnoCSS。它内置了丰富的主题配置和组件，代码规范严谨，实现了自动化的文件路由系统。`DynamicTp-Admin` 为您提供了一站式的后台管理解决方案，无需额外配置，开箱即用。同样是一个快速学习前沿技术的最佳实践。
 
 在此特别感谢开源作者：[Soybean](https://github.com/honghuangdc) 。
 

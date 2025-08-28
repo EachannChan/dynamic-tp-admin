@@ -286,8 +286,7 @@ const local: App.I18n.Schema = {
     },
     about: {
       title: '关于',
-      introduction:
-        'DynamicTp的Admin端',
+      introduction: 'DynamicTp的Admin端',
       projectInfo: {
         title: '项目信息',
         version: '版本',

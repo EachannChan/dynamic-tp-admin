@@ -286,8 +286,7 @@ const local: App.I18n.Schema = {
     },
     about: {
       title: 'About',
-      introduction:
-        'DynamicTp Admin',
+      introduction: 'DynamicTp Admin',
       projectInfo: {
         title: 'Project Info',
         version: 'Version',
