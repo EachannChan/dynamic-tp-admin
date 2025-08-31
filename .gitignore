@@ -152,6 +152,7 @@ pnpm-debug.log*
 ### Frontend specific ignores
 # Logs
 logs
+!**/src/main/java/**
 *.log
 
 # Runtime data

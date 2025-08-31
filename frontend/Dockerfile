@@ -26,8 +26,33 @@ RUN pnpm -w build
 ## ---------- Runtime stage ----------
 FROM nginx:1.27-alpine
 
+# 安装必要的工具
+RUN apk add --no-cache curl
+
+# 创建非root用户
+RUN addgroup -g 1001 -S nginx && \
+  adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx
+
 # 复制静态资源与Nginx配置
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# 设置权限
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+  chown -R nginx:nginx /var/cache/nginx && \
+  chown -R nginx:nginx /var/log/nginx && \
+  chown -R nginx:nginx /etc/nginx/conf.d && \
+  touch /var/run/nginx.pid && \
+  chown -R nginx:nginx /var/run/nginx.pid
+
+# 切换到非root用户
+USER nginx
+
 EXPOSE 80
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:80/ || exit 1
+
+# 启动Nginx
+CMD ["nginx", "-g", "daemon off;"]

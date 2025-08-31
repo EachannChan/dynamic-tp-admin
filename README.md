@@ -232,33 +232,68 @@ pnpm build
 
 支持一键编排（MySQL + Redis + 后端 + 前端）：
 
-```bash
-# 启动（首次会自动构建镜像）
-docker compose up -d --build
+#### 快速部署
 
-# 查看服务
+```bash
+# 使用部署脚本（推荐）
+./docker-deploy.sh
+
+# 或手动部署
+docker compose up -d --build
+```
+
+#### 环境配置
+
+1. 复制环境变量文件：
+
+```bash
+cp env.example .env
+```
+
+2. 修改 `.env` 文件中的配置：
+
+```bash
+# 数据库配置
+DB_NAME=panis_boot
+DB_USERNAME=root
+DB_PASSWORD=your_password
+
+# Redis配置
+REDIS_PASSWORD=your_redis_password
+```
+
+#### 服务管理
+
+```bash
+# 查看服务状态
 docker compose ps
 
-# 访问地址
-# 后端 API: http://localhost:9999
-# 前端界面: http://localhost
+# 查看日志
+docker compose logs -f [服务名]
+
+# 停止服务
+docker compose down
+
+# 重启服务
+docker compose restart [服务名]
 ```
 
-可选：自定义数据库/Redis 连接（在 `docker-compose.yml` 中修改或通过命令覆盖）：
+#### 访问地址
+
+- **前端界面**: http://localhost
+- **后端 API**: http://localhost:9999
+- **API 文档**: http://localhost:9999/doc.html
+- **MySQL**: localhost:3306
+- **Redis**: localhost:6379
+
+#### 单独构建镜像
 
 ```bash
-DB_PASSWORD=yourpass \
-docker compose up -d --build
-```
+# 后端镜像
+docker build -f backend/Dockerfile -t dynamic-tp-admin:latest .
 
-如果仅单独构建后端或前端镜像：
-
-```bash
-# 后端（多阶段构建，自动打包 admin 模块）
-docker build -f admin/Dockerfile -t panis-boot-admin:latest .
-
-# 前端（多阶段构建，Nginx 托管静态资源）
-docker build -f frontend/Dockerfile -t panis-boot-frontend:latest ./frontend
+# 前端镜像
+docker build -f frontend/Dockerfile -t dynamic-tp-frontend:latest ./frontend
 ```
 
 ### 传统部署
