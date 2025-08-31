@@ -128,20 +128,18 @@ frontend/
 - **Maven**: 3.9.6+
 - **MySQL**: 8.0.35+
 - **Redis**: 7.2.3+
-- **IDE**: IntelliJ IDEA (推荐)
 
 ### 后端启动
 
 1. **克隆项目**
 
 ```bash
-git clone https://github.com/paynezhuang/panis-boot
-git clone https://github.com/paynezhuang/panis-boot-starter
+git clone https://github.com/dromara/dynamic-tp-admin.git
 ```
 
 2. **数据库配置**
 
-   - 创建数据库 `panis_boot`
+   - 创建数据库 `dynamic_tp_admin`
    - 导入 SQL 文件（联系作者获取）
 
 3. **配置文件修改**
@@ -254,7 +252,7 @@ cp env.example .env
 
 ```bash
 # 数据库配置
-DB_NAME=panis_boot
+DB_NAME=dynamic_tp_admin
 DB_USERNAME=root
 DB_PASSWORD=your_password
 

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 9.3.0, for macos15.2 (arm64)
 --
--- Host: 127.0.0.1    Database: panis_boot
+-- Host: 127.0.0.1    Database: dynamic_tp_admin
 -- ------------------------------------------------------
 -- Server version	9.3.0
 

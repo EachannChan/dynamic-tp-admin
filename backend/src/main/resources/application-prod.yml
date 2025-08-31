@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:panis_boot}?socketTimeout=60000&connectTimeout=30000&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:dynamic_tp_admin}?socketTimeout=60000&connectTimeout=30000&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
     druid:
