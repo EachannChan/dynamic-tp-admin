@@ -2,11 +2,8 @@ package org.dromara.dynamictp.admin.infrastructure.server;
 
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import com.alipay.remoting.ConnectionEventType;
-import com.alipay.remoting.config.Configs;
 import com.alipay.remoting.exception.RemotingException;
 import com.alipay.remoting.rpc.RpcServer;
-import com.alipay.remoting.serialization.HessianSerializer;
-import com.alipay.remoting.serialization.SerializerManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
@@ -51,9 +48,6 @@ public class AdminServer {
     private ServerDisconnectProcessor serverDisconnectProcessor;
 
     @Getter
-    private static final HessianSerializer SERIALIZER = new HessianSerializer();
-
-    @Getter
     private static final SnowflakeGenerator SNOWFLAKE_GENERATOR = new SnowflakeGenerator();
 
     @PostConstruct
@@ -65,8 +59,6 @@ public class AdminServer {
                 serverDisconnectProcessor);
         server.registerUserProcessor(adminServerUserProcessor);
         this.server.startup();
-        SerializerManager.addSerializer(1, SERIALIZER);
-        System.setProperty(Configs.SERIALIZER, String.valueOf(SERIALIZER));
         log.info("DynamicTp admin server started, port: {}", port);
     }
 
