@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, shallowRef, watch } from 'vue';
-import {
-  fetchGetAllPositions,
-  fetchGetAllRoles,
-  fetchGetOrgUnitsTree,
-  fetchGetUserResponsibilities,
-  fetchSaveUserResponsibilities
-} from '@/service/api';
+import { fetchGetAllRoles, fetchGetOrgUnitsTree, fetchGetUserResponsibilities, fetchSaveUserResponsibilities } from '@/service/api';
 import { $t } from '@/locales';
 import { extractOptionsFromTree } from './shared';
 
@@ -38,7 +32,7 @@ function createDefaultModel(): Model {
   return {
     userId: props.userId,
     roleIds: [],
-    positionIds: [],
+    positionIds: [], // 保留字段以兼容后端，但不再使用
     orgUnitsIds: [],
     orgUnitsPrincipalIds: []
   };
@@ -50,8 +44,7 @@ type OrgUnitsTree = Api.SystemManage.OrgUnitsTree;
 /** the enabled role options */
 const roleOptions = shallowRef<CommonType.Option[]>([]);
 
-/** the enabled position options */
-const positionOptions = shallowRef<CommonType.Option[]>([]);
+// 岗位功能已移除
 
 /** org units tree data */
 const orgUnitsTree = shallowRef<OrgUnitsTree[]>([]);
@@ -65,12 +58,6 @@ async function handleInitOptions() {
     .then(({ error, data }) => {
       if (!error && data) {
         roleOptions.value = data;
-      }
-      return fetchGetAllPositions();
-    })
-    .then(({ error, data }) => {
-      if (!error && data) {
-        positionOptions.value = data;
       }
       return fetchGetOrgUnitsTree();
     })
@@ -140,15 +127,7 @@ watch(visible, () => {
                  :max-tag-count="3"
                  :placeholder="$t('page.manage.user.form.userRole')" />
       </NFormItemGi>
-      <NFormItemGi span="12 s:8 m:6"
-                   :label="$t('page.manage.user.userPosition')">
-        <NSelect v-model:value="model.positionIds"
-                 multiple
-                 filterable
-                 :options="positionOptions"
-                 :max-tag-count="3"
-                 :placeholder="$t('page.manage.user.form.userPosition')" />
-      </NFormItemGi>
+      <!-- 岗位功能已移除 -->
       <NFormItemGi span="24"
                    :label="$t('page.manage.user.userOrgUnits')">
         <NTreeSelect v-model:value="model.orgUnitsIds"

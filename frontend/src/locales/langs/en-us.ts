@@ -206,24 +206,16 @@ const local: App.I18n.Schema = {
     manage_role: 'Role Manage',
     manage_menu: 'Menu Manage',
     manage_dict: 'Dictionary Manage',
-    manage_position: 'Position Manage',
     manage_org: 'Organization Manage',
-    manage_notice: 'Notice Announcement',
-    properties: 'Properties Manage',
     'thread-pool': 'Thread Pool Management',
     'notify-platform': 'Notify Platform Management',
-    monitor: 'Monitor Manage',
+    monitor: 'Monitor Logs',
 
-    monitor_thread_pool_detail: 'Thread Pool Detail',
-    monitor_system: 'System Monitor',
-    monitor_cache: 'Cache Monitor',
-    monitor_file: 'File Manage',
+    'monitor_thread-pool_detail': 'Thread Pool Detail',
     monitor_logs: 'Logs Monitor',
     monitor_logs_login: 'Login Logs',
     monitor_logs_operation: 'Operation Logs',
     monitor_logs_error: 'Error Logs',
-    monitor_logs_scheduler: 'Scheduler Logs',
-    monitor_scheduler: 'Scheduler',
     tools: 'Tools Manage',
 
     'multi-menu': 'Multi Menu',
@@ -308,9 +300,6 @@ const local: App.I18n.Schema = {
       schedule: 'Work and rest Schedule',
       study: 'Study',
       work: 'Work',
-      threadPool: {
-        selectEmptyTip: 'Please select thread pool configuration'
-      },
       rest: 'Rest',
       entertainment: 'Entertainment',
       visitCount: 'Visit Count',
@@ -427,7 +416,6 @@ const local: App.I18n.Schema = {
         email: 'Email',
         status: 'User Status',
         userRole: 'User Role',
-        userPosition: 'User Position',
         userOrgUnits: 'User Organization',
         form: {
           userName: 'Please enter user name',
@@ -438,7 +426,6 @@ const local: App.I18n.Schema = {
           email: 'Please enter email',
           status: 'Please select user status',
           userRole: 'Please select user role',
-          userPosition: 'Please select user position',
           userOrgUnits: 'Please select user organization'
         },
         addUser: 'Add User',
@@ -543,26 +530,6 @@ const local: App.I18n.Schema = {
           description: 'Please enter button description'
         }
       },
-      position: {
-        name: 'Position Name',
-        i18nKey: 'I18n Key',
-        code: 'Position Code',
-        abbr: 'Abbreviation',
-        description: 'Position Description',
-        sort: 'Sort',
-        status: 'Position Status',
-        form: {
-          name: 'Please enter position name',
-          i18nKey: 'Please enter i18n key',
-          code: 'Please enter position code',
-          abbr: 'Please enter abbreviation',
-          description: 'Please enter position description',
-          sort: 'Please enter sort',
-          status: 'Please select position status'
-        },
-        addPosition: 'Add Position',
-        editPosition: 'Edit Position'
-      },
       dict: {
         title: 'Dictionary List',
         name: 'Dictionary Name',
@@ -634,22 +601,6 @@ const local: App.I18n.Schema = {
         addChildOrgUnits: 'Add Child Organization',
         unassigned: 'Unassigned Organization'
       },
-      notice: {
-        category: 'Category',
-        title: 'Title',
-        content: 'Content',
-        releaseTime: 'Release Time',
-        remark: 'Remark',
-        status: 'Status',
-        form: {
-          category: 'Please select category',
-          title: 'Please enter title',
-          content: 'Please enter content',
-          releaseTime: 'Please enter release time',
-          remark: 'Please enter remark',
-          status: 'Please select status'
-        }
-      },
       dataScope: {
         title: 'Data Scope List',
         name: 'Name',
@@ -688,87 +639,6 @@ const local: App.I18n.Schema = {
     },
     monitor: {
       percentage: '{value} %',
-      system: {
-        status: 'System Status',
-        cpuUserUsage: 'CPU User Usage',
-        cpuSystemUsage: 'CPU System Usage',
-        systemMemoryUsage: 'System Memory Usage',
-        jvmMemoryUsage: 'JVM Memory Usage',
-        operatingSystem: {
-          title: 'System Info',
-          name: 'Operating System',
-          manufacturer: 'System Manufacturer',
-          arch: 'System Architecture',
-          systemBootTime: 'System Boot Time',
-          systemUptime: 'System Uptime'
-        },
-        centralProcessor: {
-          title: 'Central Processor',
-          name: 'CPU Name',
-          physicalProcessorCount: 'Physical Processor Count',
-          logicalProcessorCount: 'Logical Processor Count (including Hyper-Threading)',
-          processorIdentifier: 'Processor Identifier',
-          vendorFreq: 'CPU Frequency',
-          userPercent: 'User Usage Percentage',
-          systemPercent: 'System Usage Percentage',
-          idlePercent: 'Idle Percentage'
-        },
-        globalMemory: {
-          title: 'System Memory',
-          total: 'Total Memory',
-          used: 'Used Memory',
-          available: 'Available Memory',
-          swapTotal: 'Swap Total Memory',
-          swapUsed: 'Used Swap',
-          swapFree: 'Free Swap',
-          memoryUsedRate: 'Memory Usage Rate',
-          swapUsedRate: 'Swap Usage Rate'
-        },
-        jvm: {
-          title: 'JVM Memory',
-          vmName: 'Name',
-          uptime: 'Uptime',
-          vmVersion: 'Version',
-          vmVendor: 'Vendor',
-          startTime: 'Start Time',
-          inputArguments: 'Input Arguments',
-          heapMemoryUsed: 'Heap Memory Used',
-          heapMemoryMax: 'Heap Memory Maximum',
-          memoryUsageRate: 'Memory Usage Rate',
-          nonHeapMemoryUsed: 'Non-Heap Memory Used'
-        },
-        fileStore: {
-          title: 'File Store',
-          name: 'Name',
-          type: 'Type',
-          mount: 'Mount Point',
-          totalSpace: 'Total Space',
-          usableSpace: 'Usable Space',
-          usedSpace: 'Used Space',
-          usedPercentage: 'Used Percentage'
-        },
-        process: {
-          title: 'Top 6 Processes',
-          processID: 'Process ID',
-          name: 'Name',
-          cpuLoad: 'CPU Load'
-        }
-      },
-      cache: {
-        redis: {
-          title: 'Redis Info',
-          version: 'Version',
-          uptime: 'Uptime',
-          connectedClients: 'Connected Clients',
-          usedMemory: 'Used Memory',
-          maxMemory: 'Max Memory',
-          memoryUsageRate: 'Memory Usage Rate',
-          memFragmentationRatio: 'Memory Fragmentation Ratio',
-          totalCommandsProcessed: 'Total Commands Processed',
-          echartsTitle: 'Command Distribution',
-          echartsSubTitle: 'Execution Time Distribution of Each Command'
-        }
-      },
       logs: {
         login: {
           userName: 'User Name',
@@ -828,72 +698,6 @@ const local: App.I18n.Schema = {
           form: {
             createUser: 'Please enter operation User'
           }
-        },
-        scheduler: {
-          jobName: 'Job Name',
-          jobGroup: 'Job Group',
-          useTime: 'Use Time(ms)',
-          status: 'Status',
-          createTime: 'Execute Time',
-          exceptionMessage: 'Exception Message',
-          exceptionClass: 'Exception Class',
-          line: 'Exceptioin Line',
-          stackTrace: 'Stack Trace',
-          executeStatus: {
-            success: 'Success',
-            fail: 'Fail'
-          },
-          form: {
-            jobName: 'Please select job name'
-          }
-        }
-      },
-      scheduler: {
-        jobName: 'Job Name',
-        jobGroup: 'Job Group',
-        jobClassName: 'Job Class Name',
-        description: 'Job Description',
-        cronExpression: 'Cron Expression',
-        jobData: 'Job Params',
-        triggerName: 'Trigger Name',
-        triggerGroup: 'Trigger Group',
-        triggerDescription: 'Trigger Description',
-        triggerData: 'Trigger Params',
-        triggerState: 'State',
-        form: {
-          jobName: 'Please enter job name',
-          jobGroup: 'Please enter job group',
-          jobClassName: 'Please enter job class name',
-          description: 'Please enter job description',
-          cronExpression: 'Please enter cron expression',
-          jobDataKey: 'Please enter job params key',
-          jobDataValue: 'Please enter job params value',
-          triggerName: 'Please enter trigger name',
-          triggerGroup: 'Please enter trigger group',
-          triggerDescription: 'Please enter trigger description',
-          triggerDataKey: 'Please enter trigger params key',
-          triggerDataValue: 'Please enter trigger params value'
-        },
-        addJob: 'Add Job',
-        editJob: 'Edit Job',
-        immediateJob: 'Immediate Job',
-        immediateSuccess: 'Immediate Success',
-        pauseJob: 'Pause Job',
-        pauseJobGroup: 'Pause Group Job',
-        pauseSuccess: 'Pause Success',
-        pauseFail: 'Pause Fail',
-        resumeJob: 'Resume Job',
-        resumeJobGroup: 'Resume Group Job',
-        resumeSuccess: 'Resume Success',
-        resumeFail: 'Resume Fail',
-        confirmOperate: 'Are You Confirm {operation} : {name} ?',
-        triggerStates: {
-          waiting: 'Waiting',
-          acquired: 'Acquired',
-          executing: 'Executing',
-          paused: 'Paused',
-          blocked: 'Blocked',
-          error: 'Error'
         }
       },
       file: {

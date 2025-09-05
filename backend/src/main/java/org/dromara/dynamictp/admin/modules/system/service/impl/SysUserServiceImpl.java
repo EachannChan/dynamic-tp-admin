@@ -30,7 +30,6 @@ import org.dromara.dynamictp.admin.modules.system.domain.entity.SysUser;
 import org.dromara.dynamictp.admin.modules.system.repository.mapper.SysUserMapper;
 import org.dromara.dynamictp.admin.modules.system.service.ISysRoleService;
 import org.dromara.dynamictp.admin.modules.system.service.ISysUserOrgService;
-import org.dromara.dynamictp.admin.modules.system.service.ISysUserPositionService;
 import org.dromara.dynamictp.admin.modules.system.service.ISysUserRoleService;
 import org.dromara.dynamictp.admin.modules.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
@@ -62,9 +61,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @NonNull
     private ISysUserOrgService sysUserOrgService;
-
-    @NonNull
-    private ISysUserPositionService sysUserPositionService;
 
     @NonNull
     private IMonLogsLoginService monLogsLoginService;
@@ -234,7 +230,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public SysUserResponsibilitiesBO queryUserResponsibilitiesWithUserId(Long userId) {
         List<Long> userRoleIds = sysUserRoleService.queryRoleIdsWithUserId(userId);
-        List<Long> userPositionIds = sysUserPositionService.queryPositionIdsWithUserId(userId);
         // 用户所属组织
         List<SysUserOrgBO> sysUserOrgBOList = sysUserOrgService.queryOrgUnitsListWithUserId(userId);
         List<Long> userOrgUnitsPrincipalIds = sysUserOrgBOList.stream()
@@ -244,7 +239,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return SysUserResponsibilitiesBO.builder()
                 .userId(userId)
                 .roleIds(userRoleIds)
-                .positionIds(userPositionIds)
+                .positionIds(List.of()) // 岗位功能已移除，返回空列表
                 .orgUnitsIds(userOrgUnitsIds)
                 .orgUnitsPrincipalIds(userOrgUnitsPrincipalIds)
                 .build();
@@ -254,8 +249,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public boolean updateUserResponsibilities(SysUserResponsibilitiesBO responsibilitiesBO) {
         Long userId = responsibilitiesBO.getUserId();
         boolean role = sysUserRoleService.updateUserRole(userId, responsibilitiesBO.getRoleIds());
-        boolean position = sysUserPositionService.updateUserPosition(userId, responsibilitiesBO.getPositionIds());
-        boolean userOrg = sysUserOrgService.updateUserOrg(userId, responsibilitiesBO.getOrgUnitsIds(), responsibilitiesBO.getOrgUnitsPrincipalIds());
-        return role && position && userOrg;
+        // 岗位功能已移除，跳过岗位更新
+        boolean userOrg = sysUserOrgService.updateUserOrg(userId, responsibilitiesBO.getOrgUnitsIds(),
+                responsibilitiesBO.getOrgUnitsPrincipalIds());
+        return role && userOrg;
     }
 }

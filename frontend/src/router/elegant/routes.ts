@@ -51,26 +51,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
-    name: 'demo-route',
-    path: '/demo-route',
-    component: 'layout.base',
-    meta: {
-      title: 'demo-route',
-      i18nKey: 'route.demo-route'
-    },
-    children: [
-      {
-        name: 'demo-route_child',
-        path: '/demo-route/child/:id',
-        component: 'view.demo-route_child',
-        meta: {
-          title: 'demo-route_child',
-          i18nKey: 'route.demo-route_child'
-        }
-      }
-    ]
-  },
-  {
     name: 'function',
     path: '/function',
     component: 'layout.base',
@@ -252,30 +232,12 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'manage_notice',
-        path: '/manage/notice',
-        component: 'view.manage_notice',
-        meta: {
-          title: 'manage_notice',
-          i18nKey: 'route.manage_notice'
-        }
-      },
-      {
         name: 'manage_org',
         path: '/manage/org',
         component: 'view.manage_org',
         meta: {
           title: 'manage_org',
           i18nKey: 'route.manage_org'
-        }
-      },
-      {
-        name: 'manage_position',
-        path: '/manage/position',
-        component: 'view.manage_position',
-        meta: {
-          title: 'manage_position',
-          i18nKey: 'route.manage_position'
         }
       },
       {
@@ -317,26 +279,9 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
-        name: 'monitor_cache',
-        path: '/monitor/cache',
-        component: 'view.monitor_cache',
-        meta: {
-          title: 'monitor_cache',
-          i18nKey: 'route.monitor_cache'
-        }
-      },
-      {
-        name: 'monitor_file',
-        path: '/monitor/file',
-        component: 'view.monitor_file',
-        meta: {
-          title: 'monitor_file',
-          i18nKey: 'route.monitor_file'
-        }
-      },
-      {
         name: 'monitor_logs',
         path: '/monitor/logs',
+        component: 'layout.base',
         meta: {
           title: 'monitor_logs',
           i18nKey: 'route.monitor_logs'
@@ -368,35 +313,8 @@ export const generatedRoutes: GeneratedRoute[] = [
               title: 'monitor_logs_operation',
               i18nKey: 'route.monitor_logs_operation'
             }
-          },
-          {
-            name: 'monitor_logs_scheduler',
-            path: '/monitor/logs/scheduler',
-            component: 'view.monitor_logs_scheduler',
-            meta: {
-              title: 'monitor_logs_scheduler',
-              i18nKey: 'route.monitor_logs_scheduler'
-            }
           }
         ]
-      },
-      {
-        name: 'monitor_scheduler',
-        path: '/monitor/scheduler',
-        component: 'view.monitor_scheduler',
-        meta: {
-          title: 'monitor_scheduler',
-          i18nKey: 'route.monitor_scheduler'
-        }
-      },
-      {
-        name: 'monitor_system',
-        path: '/monitor/system',
-        component: 'view.monitor_system',
-        meta: {
-          title: 'monitor_system',
-          i18nKey: 'route.monitor_system'
-        }
       }
     ]
   },

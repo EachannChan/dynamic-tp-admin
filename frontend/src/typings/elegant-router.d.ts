@@ -33,8 +33,6 @@ declare module "@elegant-router/types" {
     "404": "/404";
     "500": "/500";
     "about": "/about";
-    "demo-route": "/demo-route";
-    "demo-route_child": "/demo-route/child/:id";
     "function": "/function";
     "function_hide-child": "/function/hide-child";
     "function_hide-child_one": "/function/hide-child/one";
@@ -51,22 +49,15 @@ declare module "@elegant-router/types" {
     "manage": "/manage";
     "manage_dict": "/manage/dict";
     "manage_menu": "/manage/menu";
-    "manage_notice": "/manage/notice";
     "manage_org": "/manage/org";
-    "manage_position": "/manage/position";
     "manage_role": "/manage/role";
     "manage_user": "/manage/user";
     "manage_user-detail": "/manage/user-detail/:id";
     "monitor": "/monitor";
-    "monitor_cache": "/monitor/cache";
-    "monitor_file": "/monitor/file";
     "monitor_logs": "/monitor/logs";
     "monitor_logs_error": "/monitor/logs/error";
     "monitor_logs_login": "/monitor/logs/login";
     "monitor_logs_operation": "/monitor/logs/operation";
-    "monitor_logs_scheduler": "/monitor/logs/scheduler";
-    "monitor_scheduler": "/monitor/scheduler";
-    "monitor_system": "/monitor/system";
     "multi-menu": "/multi-menu";
     "multi-menu_first": "/multi-menu/first";
     "multi-menu_first_child": "/multi-menu/first/child";
@@ -123,7 +114,6 @@ declare module "@elegant-router/types" {
     | "404"
     | "500"
     | "about"
-    | "demo-route"
     | "function"
     | "home"
     | "iframe-page"
@@ -158,7 +148,6 @@ declare module "@elegant-router/types" {
     | "iframe-page"
     | "login"
     | "about"
-    | "demo-route_child"
     | "function_hide-child_one"
     | "function_hide-child_three"
     | "function_hide-child_two"
@@ -170,20 +159,13 @@ declare module "@elegant-router/types" {
     | "home"
     | "manage_dict"
     | "manage_menu"
-    | "manage_notice"
     | "manage_org"
-    | "manage_position"
     | "manage_role"
     | "manage_user-detail"
     | "manage_user"
-    | "monitor_cache"
-    | "monitor_file"
     | "monitor_logs_error"
     | "monitor_logs_login"
     | "monitor_logs_operation"
-    | "monitor_logs_scheduler"
-    | "monitor_scheduler"
-    | "monitor_system"
     | "multi-menu_first_child"
     | "multi-menu_second_child_home"
     | "notify-platform"

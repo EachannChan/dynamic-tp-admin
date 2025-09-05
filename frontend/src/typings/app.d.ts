@@ -883,87 +883,6 @@ declare namespace App {
         };
         monitor: {
           percentage: string;
-          system: {
-            status: string;
-            cpuUserUsage: string;
-            cpuSystemUsage: string;
-            systemMemoryUsage: string;
-            jvmMemoryUsage: string;
-            operatingSystem: {
-              title: string;
-              name: string;
-              manufacturer: string;
-              arch: string;
-              systemBootTime: string;
-              systemUptime: string;
-            };
-            centralProcessor: {
-              title: string;
-              name: string;
-              physicalProcessorCount: string;
-              logicalProcessorCount: string;
-              processorIdentifier: string;
-              vendorFreq: string;
-              userPercent: string;
-              systemPercent: string;
-              idlePercent: string;
-            };
-            globalMemory: {
-              title: string;
-              total: string;
-              used: string;
-              available: string;
-              swapTotal: string;
-              swapUsed: string;
-              swapFree: string;
-              memoryUsedRate: string;
-              swapUsedRate: string;
-            };
-            jvm: {
-              title: string;
-              vmName: string;
-              uptime: string;
-              vmVersion: string;
-              vmVendor: string;
-              startTime: string;
-              inputArguments: string;
-              heapMemoryUsed: string;
-              heapMemoryMax: string;
-              memoryUsageRate: string;
-              nonHeapMemoryUsed: string;
-            };
-            fileStore: {
-              title: string;
-              name: string;
-              type: string;
-              mount: string;
-              totalSpace: string;
-              usableSpace: string;
-              usedSpace: string;
-              usedPercentage: string;
-            };
-            process: {
-              title: string;
-              processID: string;
-              name: string;
-              cpuLoad: string;
-            };
-          };
-          cache: {
-            redis: {
-              title: string;
-              version: string;
-              uptime: string;
-              connectedClients: string;
-              usedMemory: string;
-              maxMemory: string;
-              memoryUsageRate: string;
-              memFragmentationRatio: string;
-              totalCommandsProcessed: string;
-              echartsTitle: string;
-              echartsSubTitle: string;
-            };
-          };
           logs: {
             login: {
               userName: string;
@@ -1023,72 +942,6 @@ declare namespace App {
               form: {
                 createUser: string;
               };
-            };
-            scheduler: {
-              jobName: string;
-              jobGroup: string;
-              useTime: string;
-              status: string;
-              createTime: string;
-              exceptionMessage: string;
-              exceptionClass: string;
-              line: string;
-              stackTrace: string;
-              executeStatus: {
-                success: string;
-                fail: string;
-              };
-              form: {
-                jobName: string;
-              };
-            };
-          };
-          scheduler: {
-            jobName: string;
-            jobGroup: string;
-            jobClassName: string;
-            description: string;
-            cronExpression: string;
-            jobData: string;
-            triggerName: string;
-            triggerGroup: string;
-            triggerDescription: string;
-            triggerData: string;
-            triggerState: string;
-            form: {
-              jobName: string;
-              jobGroup: string;
-              jobClassName: string;
-              description: string;
-              cronExpression: string;
-              jobDataKey: string;
-              jobDataValue: string;
-              triggerName: string;
-              triggerGroup: string;
-              triggerDescription: string;
-              triggerDataKey: string;
-              triggerDataValue: string;
-            };
-            addJob: string;
-            editJob: string;
-            immediateJob: string;
-            immediateSuccess: string;
-            pauseJob: string;
-            pauseJobGroup: string;
-            pauseSuccess: string;
-            pauseFail: string;
-            resumeJob: string;
-            resumeJobGroup: string;
-            resumeSuccess: string;
-            resumeFail: string;
-            confirmOperate: string;
-            triggerStates: {
-              waiting: string;
-              acquired: string;
-              executing: string;
-              paused: string;
-              blocked: string;
-              error: string;
             };
           };
           file: {
@@ -1206,16 +1059,6 @@ declare namespace App {
       message: string;
       /** The backend service response data */
       data: T;
-    };
-
-    /** The demo backend service response data */
-    type DemoResponse<T = unknown> = {
-      /** The backend service response code */
-      status: string;
-      /** The backend service response message */
-      message: string;
-      /** The backend service response data */
-      result: T;
     };
   }
 }

@@ -161,9 +161,7 @@ const customRoutes: CustomRoute[] = [
         }
       }
     ]
-  },
-  // 添加监控模块路由
-  ...monitorRoutes
+  }
 ];
 
 /** create routes when the auth route mode is static */
@@ -172,11 +170,11 @@ export function createStaticRoutes() {
 
   const authRoutes: ElegantRoute[] = [];
 
-  [...customRoutes, ...generatedRoutes].forEach((item) => {
+  [...customRoutes, ...generatedRoutes, ...monitorRoutes].forEach((item) => {
     if (item.meta?.constant) {
-      constantRoutes.push(item);
+      constantRoutes.push(item as ElegantRoute);
     } else {
-      authRoutes.push(item);
+      authRoutes.push(item as ElegantRoute);
     }
   });
 

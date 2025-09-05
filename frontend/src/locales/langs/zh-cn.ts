@@ -206,25 +206,15 @@ const local: App.I18n.Schema = {
     manage_role: '角色管理',
     manage_menu: '菜单管理',
     manage_dict: '字典管理',
-    manage_position: '岗位管理',
     manage_org: '组织管理',
-    manage_notice: '通知公告',
-    properties: '配置管理',
     'thread-pool': '线程池管理',
     'notify-platform': '告警渠道管理',
-    monitor: '监控管理',
+    monitor: '日志管理',
 
-    monitor_thread_pool_detail: '线程池详情',
-    monitor_system: '系统监控',
-    monitor_cache: '缓存监控',
-    monitor_file: '文件管理',
     monitor_logs: '日志管理',
     monitor_logs_login: '登录日志',
     monitor_logs_operation: '操作日志',
     monitor_logs_error: '错误日志',
-    monitor_logs_scheduler: '调度日志',
-    monitor_scheduler: '调度任务',
-    tools: '工具管理',
 
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
@@ -308,9 +298,6 @@ const local: App.I18n.Schema = {
       schedule: '作息安排',
       study: '学习',
       work: '工作',
-      threadPool: {
-        selectEmptyTip: '请选择线程池配置'
-      },
       rest: '休息',
       entertainment: '娱乐',
       visitCount: '访问量',
@@ -427,7 +414,6 @@ const local: App.I18n.Schema = {
         email: '邮箱',
         status: '用户状态',
         userRole: '用户角色',
-        userPosition: '用户岗位',
         userOrgUnits: '用户组织',
         form: {
           userName: '请输入用户名',
@@ -438,7 +424,6 @@ const local: App.I18n.Schema = {
           email: '请输入邮箱',
           status: '请选择用户状态',
           userRole: '请选择用户角色',
-          userPosition: '请选择用户岗位',
           userOrgUnits: '请选择用户组织'
         },
         addUser: '新增用户',
@@ -543,26 +528,6 @@ const local: App.I18n.Schema = {
           description: '请输入按钮描述'
         }
       },
-      position: {
-        name: '岗位名称',
-        i18nKey: '国际化key',
-        code: '岗位编码',
-        abbr: '岗位简称',
-        description: '岗位描述',
-        sort: '排序',
-        status: '岗位状态',
-        form: {
-          name: '请输入岗位名称',
-          i18nKey: '请输入国际化key',
-          code: '请输入岗位编码',
-          abbr: '请输入岗位简称',
-          description: '请输入岗位描述',
-          sort: '请输入排序',
-          status: '请选择岗位状态'
-        },
-        addPosition: '新增岗位',
-        editPosition: '编辑岗位'
-      },
       dict: {
         title: '字典列表',
         name: '字典名称',
@@ -634,22 +599,6 @@ const local: App.I18n.Schema = {
         addChildOrgUnits: '新增子组织',
         unassigned: '未分配组织'
       },
-      notice: {
-        category: '分类',
-        title: '标题',
-        content: '内容',
-        releaseTime: '发布时间',
-        remark: '备注',
-        status: '状态',
-        form: {
-          category: '请选择分类',
-          title: '请输入标题',
-          content: '请输入内容',
-          releaseTime: '请输入发布时间',
-          remark: '请输入备注',
-          status: '请选择状态'
-        }
-      },
       dataScope: {
         title: '数据权限列表',
         name: '名称',
@@ -688,87 +637,6 @@ const local: App.I18n.Schema = {
     },
     monitor: {
       percentage: '{value} %',
-      system: {
-        status: '系统状态',
-        cpuUserUsage: 'CPU 用户使用率',
-        cpuSystemUsage: 'CPU 系统使用率',
-        systemMemoryUsage: '系统内存使用率',
-        jvmMemoryUsage: 'JVM 内存使用率',
-        operatingSystem: {
-          title: '系统信息',
-          name: '操作系统',
-          manufacturer: '系统制造商',
-          arch: '系统架构',
-          systemBootTime: '系统启动时间',
-          systemUptime: '系统运行时间'
-        },
-        centralProcessor: {
-          title: '中央处理器',
-          name: 'CPU 名称',
-          physicalProcessorCount: '物理核心数',
-          logicalProcessorCount: '逻辑核心数（包含超线程）',
-          processorIdentifier: '处理器标识符',
-          vendorFreq: 'CPU 频率',
-          userPercent: '用户使用率',
-          systemPercent: '系统使用率',
-          idlePercent: '空闲率'
-        },
-        globalMemory: {
-          title: '系统内存',
-          total: '总内存',
-          used: '已用内存',
-          available: '可用内存',
-          swapTotal: '交换区总内存',
-          swapUsed: '已用交换区',
-          swapFree: '剩余交换区',
-          memoryUsedRate: '内存使用率',
-          swapUsedRate: '交换区使用率'
-        },
-        jvm: {
-          title: 'JVM 内存',
-          vmName: '名称',
-          uptime: '运行时间',
-          vmVersion: '版本',
-          vmVendor: '供应商',
-          startTime: '启动时间',
-          inputArguments: '输入参数',
-          heapMemoryUsed: '堆内存已用',
-          heapMemoryMax: '堆内存最大',
-          memoryUsageRate: '使用率',
-          nonHeapMemoryUsed: '非堆内存已用'
-        },
-        fileStore: {
-          title: '文件存储',
-          name: '名称',
-          type: '类型',
-          mount: '挂载点',
-          totalSpace: '总空间',
-          usableSpace: '可用空间',
-          usedSpace: '已用空间',
-          usedPercentage: '已用百分比'
-        },
-        process: {
-          title: '系统前 6 进程',
-          processID: '进程ID',
-          name: '名称',
-          cpuLoad: 'CPU 负载'
-        }
-      },
-      cache: {
-        redis: {
-          title: 'Redis 缓存信息',
-          version: '版本',
-          uptime: '运行时间',
-          connectedClients: '连接客户端数',
-          usedMemory: '已用内存',
-          maxMemory: '最大内存',
-          memoryUsageRate: '内存使用率',
-          memFragmentationRatio: '内存碎片率',
-          totalCommandsProcessed: '命令处理总数',
-          echartsTitle: '命令统计',
-          echartsSubTitle: '图示每一个命令的执行占比'
-        }
-      },
       logs: {
         login: {
           userName: '用户名',
@@ -828,72 +696,6 @@ const local: App.I18n.Schema = {
           form: {
             createUser: '请填写操作用户'
           }
-        },
-        scheduler: {
-          jobName: '任务名称',
-          jobGroup: '任务组名',
-          useTime: '耗时(ms)',
-          status: '执行状态',
-          createTime: '执行时间',
-          exceptionMessage: '异常信息',
-          exceptionClass: '异常类名',
-          line: '异常行号',
-          stackTrace: '异常堆栈',
-          executeStatus: {
-            success: '执行成功',
-            fail: '执行失败'
-          },
-          form: {
-            jobName: '请选择任务名称'
-          }
-        }
-      },
-      scheduler: {
-        jobName: '任务名称',
-        jobGroup: '任务组名',
-        jobClassName: '任务类名',
-        description: '任务描述',
-        cronExpression: 'cron 表达式',
-        jobData: '任务参数',
-        triggerName: '触发器名称',
-        triggerGroup: '触发器组名',
-        triggerDescription: '触发器描述',
-        triggerData: '触发器参数',
-        triggerState: '状态',
-        form: {
-          jobName: '请输入任务名称',
-          jobGroup: '请输入任务组名',
-          jobClassName: '请输入任务类名',
-          description: '请输入任务描述',
-          cronExpression: '请输入 cron 表达式',
-          jobDataKey: '请输入任务参数Key',
-          jobDataValue: '请输入任务参数Value',
-          triggerName: '请输入触发器名称',
-          triggerGroup: '请输入触发器组名',
-          triggerDescription: '请输入触发器描述',
-          triggerDataKey: '请输入触发器参数Key',
-          triggerDataValue: '请输入触发器参数Value'
-        },
-        addJob: '新增任务',
-        editJob: '编辑任务',
-        immediateJob: '立即执行',
-        immediateSuccess: '执行成功',
-        pauseJob: '暂停任务',
-        pauseJobGroup: '暂停任务组',
-        pauseSuccess: '暂停成功',
-        pauseFail: '暂停失败',
-        resumeJob: '恢复任务',
-        resumeJobGroup: '恢复任务组',
-        resumeSuccess: '恢复成功',
-        resumeFail: '恢复失败',
-        confirmOperate: '您确认{operation} : {name} ?',
-        triggerStates: {
-          waiting: '等待执行',
-          acquired: '准备执行',
-          executing: '执行中',
-          paused: '暂停',
-          blocked: '阻塞',
-          error: '错误'
         }
       },
       file: {
