@@ -49,7 +49,7 @@ CREATE TABLE `man_client` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除(0:否,1:是)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_client_id` (`client_id`) COMMENT '客户端ID唯一索引',
-  UNIQUE KEY `uk_client_name` (`client_name`) COMMENT '客户端名称唯一索引',
+  KEY `idx_client_name` (`client_name`) COMMENT '客户端名称索引',
   KEY `idx_is_online` (`is_online`) COMMENT '在线状态索引',
   KEY `idx_status` (`status`) COMMENT '状态索引',
   KEY `idx_create_time` (`create_time`) COMMENT '创建时间索引'

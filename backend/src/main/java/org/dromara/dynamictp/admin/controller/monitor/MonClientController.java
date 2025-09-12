@@ -12,6 +12,7 @@ import org.dromara.dynamictp.admin.infrastructure.server.AdminServer;
 import org.dromara.dynamictp.admin.modules.manager.domain.entity.ManClient;
 import org.dromara.dynamictp.admin.modules.manager.facade.IManClientFacade;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -177,5 +178,149 @@ public class MonClientController {
     result.put("timestamp", System.currentTimeMillis());
 
     return Result.data(result);
+  }
+
+  @GetMapping("/services")
+  @SaCheckPermission("mon:service:list")
+  @Operation(operationId = "5", summary = "获取服务列表（按服务名分组）")
+  @RepeatSubmit(interval = -1)
+  public Result<List<Map<String, Object>>> getServices() {
+    log.info("获取服务列表");
+    Set<String> connectedClientAddresses = adminServer.getConnectedClientAddresses();
+    List<Map<String, Object>> services = new ArrayList<>();
+
+    // 按服务名分组
+    Map<String, List<Map<String, Object>>> serviceGroups = new HashMap<>();
+
+    // 处理当前连接的客户端
+    for (String clientAddress : connectedClientAddresses) {
+      String clientName = adminServer.getAttribute(clientAddress, "clientName");
+      if (clientName == null)
+        continue;
+
+      // 解析客户端地址
+      String[] parts = clientAddress.split(":");
+      String clientIp = parts.length > 0 ? parts[0] : "unknown";
+      int clientPort = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+
+      Map<String, Object> instance = new HashMap<>();
+      instance.put("clientId", clientAddress);
+      instance.put("clientIp", clientIp);
+      instance.put("clientPort", clientPort);
+      instance.put("status", "online");
+      instance.put("lastHeartbeat", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+      serviceGroups.computeIfAbsent(clientName, k -> new ArrayList<>()).add(instance);
+    }
+
+    // 处理数据库中的离线客户端
+    List<ManClient> allClients = iManClientFacade.getOnlineClients();
+    Set<String> connectedClientNames = connectedClientAddresses.stream()
+        .map(clientAddress -> adminServer.getClientName(clientAddress))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
+
+    for (ManClient dbClient : allClients) {
+      String dbClientName = dbClient.getClientName();
+      if (!connectedClientNames.contains(dbClientName)) {
+        Map<String, Object> instance = new HashMap<>();
+        instance.put("clientId", dbClient.getClientId());
+        instance.put("clientIp", dbClient.getClientIp());
+        instance.put("clientPort", dbClient.getClientPort());
+        instance.put("status", "offline");
+        instance.put("lastHeartbeat", dbClient.getLastHeartbeatTime() != null
+            ? dbClient.getLastHeartbeatTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            : LocalDateTime.now().minusHours(2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        serviceGroups.computeIfAbsent(dbClientName, k -> new ArrayList<>()).add(instance);
+      }
+    }
+
+    // 构建服务列表
+    for (Map.Entry<String, List<Map<String, Object>>> entry : serviceGroups.entrySet()) {
+      Map<String, Object> service = new HashMap<>();
+      service.put("serviceName", entry.getKey());
+      service.put("instanceCount", entry.getValue().size());
+      service.put("onlineCount", entry.getValue().stream()
+          .mapToInt(instance -> "online".equals(instance.get("status")) ? 1 : 0)
+          .sum());
+      service.put("offlineCount", entry.getValue().size() -
+          entry.getValue().stream()
+              .mapToInt(instance -> "online".equals(instance.get("status")) ? 1 : 0)
+              .sum());
+      service.put("instances", entry.getValue());
+      service.put("status", entry.getValue().stream()
+          .anyMatch(instance -> "online".equals(instance.get("status"))) ? "online" : "offline");
+
+      services.add(service);
+    }
+
+    return Result.data(services);
+  }
+
+  @GetMapping("/services/{serviceName}/instances")
+  @SaCheckPermission("mon:service:instances")
+  @Operation(operationId = "6", summary = "获取指定服务的实例列表")
+  @RepeatSubmit(interval = -1)
+  public Result<List<Map<String, Object>>> getServiceInstances(@PathVariable String serviceName) {
+    log.info("获取服务实例列表，服务名：{}", serviceName);
+    Set<String> connectedClientAddresses = adminServer.getConnectedClientAddresses();
+    List<Map<String, Object>> instances = new ArrayList<>();
+
+    // 处理当前连接的客户端
+    for (String clientAddress : connectedClientAddresses) {
+      String clientName = adminServer.getClientName(clientAddress);
+      if (!serviceName.equals(clientName))
+        continue;
+
+      // 解析客户端地址
+      String[] parts = clientAddress.split(":");
+      String clientIp = parts.length > 0 ? parts[0] : "unknown";
+      int clientPort = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+
+      Map<String, Object> instance = new HashMap<>();
+      instance.put("clientId", clientAddress);
+      instance.put("clientIp", clientIp);
+      instance.put("clientPort", clientPort);
+      instance.put("status", "online");
+      instance.put("lastHeartbeat", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+      instance.put("registerTime", LocalDateTime.now().minusHours(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+      instance.put("applicationName", "panis-boot");
+      instance.put("environment", "dev");
+      instance.put("version", "1.0.0");
+
+      instances.add(instance);
+    }
+
+    // 处理数据库中的离线客户端
+    List<ManClient> allClients = iManClientFacade.getOnlineClients();
+    Set<String> connectedClientNames = connectedClientAddresses.stream()
+        .map(clientAddress -> adminServer.getClientName(clientAddress))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
+
+    for (ManClient dbClient : allClients) {
+      String dbClientName = dbClient.getClientName();
+      if (serviceName.equals(dbClientName) && !connectedClientNames.contains(dbClientName)) {
+        Map<String, Object> instance = new HashMap<>();
+        instance.put("clientId", dbClient.getClientId());
+        instance.put("clientIp", dbClient.getClientIp());
+        instance.put("clientPort", dbClient.getClientPort());
+        instance.put("status", "offline");
+        instance.put("lastHeartbeat", dbClient.getLastHeartbeatTime() != null
+            ? dbClient.getLastHeartbeatTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            : LocalDateTime.now().minusHours(2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        instance.put("registerTime", dbClient.getCreateTime() != null
+            ? dbClient.getCreateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            : LocalDateTime.now().minusHours(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        instance.put("applicationName", "panis-boot");
+        instance.put("environment", "dev");
+        instance.put("version", dbClient.getClientVersion() != null ? dbClient.getClientVersion() : "1.0.0");
+
+        instances.add(instance);
+      }
+    }
+
+    return Result.data(instances);
   }
 }

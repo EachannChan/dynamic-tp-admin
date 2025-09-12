@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useClientStore } from '@/store/modules/client';
 import SvgIcon from '@/components/custom/svg-icon.vue';
 
 interface Props {
-  modelValue?: string; // clientName
+  modelValue?: string; // clientId (IP:PORT)
 }
 
 interface Emits {
-  (e: 'update:modelValue', value: string): void; // clientName
+  (e: 'update:modelValue', value: string): void; // clientId
   (e: 'change', client: any): void;
 }
 
@@ -19,7 +19,23 @@ const emit = defineEmits<Emits>();
 const clientStore = useClientStore();
 
 // 选中的客户端
-const selectedClient = ref<string>(''); // clientName
+const selectedClient = ref<string>(''); // clientId
+const loading = ref(false);
+
+// 计算属性：按服务分组的客户端
+const groupedClients = computed(() => {
+  const groups: { [key: string]: any[] } = {};
+
+  // 处理在线客户端
+  clientStore.clients.forEach((client: any) => {
+    if (!groups[client.clientName]) {
+      groups[client.clientName] = [];
+    }
+    groups[client.clientName].push(client);
+  });
+
+  return groups;
+});
 
 // 获取客户端列表
 async function getClientList() {
@@ -28,24 +44,25 @@ async function getClientList() {
 
 // 刷新客户端列表
 async function refreshClientList() {
-  console.log('开始刷新客户端列表');
+  loading.value = true;
   try {
     await clientStore.refreshClientList();
-    console.log('刷新完成，客户端列表:', clientStore.clients);
   } catch (error) {
-    console.error('刷新客户端列表失败:', error);
+    // 处理错误
+  } finally {
+    loading.value = false;
   }
 }
 
 // 处理客户端切换
-function handleClientChange(clientName: string) {
-  const client = clientStore.clients.find((c: any) => c.clientName === clientName);
+function handleClientChange(clientId: string) {
+  const client = clientStore.clients.find((c: any) => c.clientId === clientId);
 
   // 只有在线客户端才能被选择
   if (client && client.status === 'online') {
-    selectedClient.value = clientName;
-    emit('update:modelValue', clientName);
-    clientStore.setSelectedClient(clientName, client);
+    selectedClient.value = clientId;
+    emit('update:modelValue', clientId);
+    clientStore.setSelectedClient(client.clientName, client);
     emit('change', client);
   }
 }
@@ -81,6 +98,22 @@ function isClientClickable(client: any) {
   return client.status === 'online';
 }
 
+// 获取服务状态
+function getServiceStatus(serviceName: string) {
+  const clients = groupedClients.value[serviceName] || [];
+  const hasOnline = clients.some((client: any) => client.status === 'online');
+  return hasOnline ? 'online' : 'offline';
+}
+
+// 获取服务统计
+function getServiceStats(serviceName: string) {
+  const clients = groupedClients.value[serviceName] || [];
+  const total = clients.length;
+  const online = clients.filter((client: any) => client.status === 'online').length;
+  const offline = total - online;
+  return { total, online, offline };
+}
+
 // 监听props变化
 watch(
   () => props.modelValue,
@@ -103,58 +136,90 @@ onMounted(() => {
          class="mb-4">
     <template #header-extra>
       <NButton size="small"
-               :loading="clientStore.loading"
-               @click="refreshClientList">
-        刷新
-      </NButton>
+               :loading="loading"
+               @click="refreshClientList">刷新</NButton>
     </template>
 
-    <div v-if="!clientStore.loading && clientStore.clients.length === 0"
+    <div v-if="!loading && Object.keys(groupedClients).length === 0"
          class="flex items-center justify-center py-12">
       <NEmpty description="暂无客户端" />
     </div>
 
     <div v-else
-         class="grid grid-cols-1 gap-4 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4">
-      <div v-for="client in clientStore.clients"
-           :key="client.clientName"
-           class="relative transition-all duration-200 hover:shadow-md"
-           :class="[
-          selectedClient === client.clientName ? 'ring-2 ring-primary ring-opacity-50' : '',
-          isClientClickable(client) ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
-        ]"
-           @click="isClientClickable(client) ? handleClientChange(client.clientName) : null">
-        <NCard :bordered="true"
-               size="small"
-               class="h-full"
-               :class="[
-            selectedClient === client.clientName ? 'border-primary bg-primary-50' : '',
-            isClientClickable(client) ? 'hover:border-gray-300' : 'border-gray-200'
-          ]">
-          <div class="flex items-start space-x-3">
+         class="space-y-6">
+      <!-- 按服务分组显示 -->
+      <div v-for="(clients, serviceName) in groupedClients"
+           :key="serviceName"
+           class="space-y-3">
+        <!-- 服务标题 -->
+        <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+          <div class="flex items-center space-x-3">
             <div class="flex-shrink-0">
-              <div class="h-10 w-10 flex items-center justify-center rounded-full"
-                   :class="client.status === 'online' ? 'bg-green-100' : 'bg-gray-100'">
-                <SvgIcon icon="mdi:monitor"
-                         :class="client.status === 'online' ? 'text-lg text-green-600' : 'text-lg text-gray-400'" />
+              <div class="h-8 w-8 flex items-center justify-center rounded-full"
+                   :class="getServiceStatus(serviceName) === 'online' ? 'bg-green-100' : 'bg-gray-100'">
+                <SvgIcon icon="mdi:server"
+                         :class="getServiceStatus(serviceName) === 'online' ? 'text-lg text-green-600' : 'text-lg text-gray-400'" />
               </div>
             </div>
-            <div class="min-w-0 flex-1">
-              <div class="mb-2 flex items-center justify-between">
-                <h3 class="truncate text-sm font-medium"
-                    :class="client.status === 'online' ? 'text-gray-900' : 'text-gray-500'">
-                  {{ client.clientName }}
-                </h3>
-                <NTag :type="getStatusColor(client.status)"
-                      size="small">
-                  {{ getStatusText(client.status) }}
-                </NTag>
+            <div>
+              <h3 class="text-lg text-gray-900 font-semibold">
+                {{ serviceName }}
+              </h3>
+              <div class="flex items-center text-sm text-gray-500 space-x-4">
+                <span>总实例: {{ getServiceStats(serviceName).total }}</span>
+                <span class="text-green-600">在线: {{ getServiceStats(serviceName).online }}</span>
+                <span class="text-red-600">离线: {{ getServiceStats(serviceName).offline }}</span>
               </div>
-              <div class="mb-1 text-xs text-gray-500">{{ client.clientIp }}:{{ client.clientPort }}</div>
-              <div class="text-xs text-gray-400">最后心跳: {{ formatTime(client.lastHeartbeat) }}</div>
             </div>
           </div>
-        </NCard>
+          <NTag :type="getServiceStatus(serviceName) === 'online' ? 'success' : 'error'"
+                size="medium">
+            {{ getServiceStatus(serviceName) === 'online' ? '在线' : '离线' }}
+          </NTag>
+        </div>
+
+        <!-- 实例列表 -->
+        <div class="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
+          <div v-for="client in clients"
+               :key="client.clientId"
+               class="relative transition-all duration-200 hover:shadow-md"
+               :class="[
+              selectedClient === client.clientId ? 'ring-2 ring-primary ring-opacity-50' : '',
+              isClientClickable(client) ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+            ]"
+               @click="isClientClickable(client) ? handleClientChange(client.clientId) : null">
+            <NCard :bordered="true"
+                   size="small"
+                   class="h-full"
+                   :class="[
+                selectedClient === client.clientId ? 'border-primary bg-primary-50' : '',
+                isClientClickable(client) ? 'hover:border-gray-300' : 'border-gray-200'
+              ]">
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="h-8 w-8 flex items-center justify-center rounded-full"
+                       :class="client.status === 'online' ? 'bg-green-100' : 'bg-gray-100'">
+                    <SvgIcon icon="mdi:monitor"
+                             :class="client.status === 'online' ? 'text-sm text-green-600' : 'text-sm text-gray-400'" />
+                  </div>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="mb-1 flex items-center justify-between">
+                    <h4 class="truncate text-sm font-medium"
+                        :class="client.status === 'online' ? 'text-gray-900' : 'text-gray-500'">
+                      {{ client.clientIp }}:{{ client.clientPort }}
+                    </h4>
+                    <NTag :type="getStatusColor(client.status)"
+                          size="tiny">
+                      {{ getStatusText(client.status) }}
+                    </NTag>
+                  </div>
+                  <div class="text-xs text-gray-400">最后心跳: {{ formatTime(client.lastHeartbeat) }}</div>
+                </div>
+              </div>
+            </NCard>
+          </div>
+        </div>
       </div>
     </div>
   </NCard>

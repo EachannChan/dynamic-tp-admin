@@ -65,6 +65,7 @@ declare module "@elegant-router/types" {
     "multi-menu_second_child": "/multi-menu/second/child";
     "multi-menu_second_child_home": "/multi-menu/second/child/home";
     "notify-platform": "/notify-platform";
+    "service": "/service";
     "thread-pool": "/thread-pool";
     "user-center": "/user-center";
   };
@@ -122,6 +123,7 @@ declare module "@elegant-router/types" {
     | "monitor"
     | "multi-menu"
     | "notify-platform"
+    | "service"
     | "thread-pool"
     | "user-center"
   >;
@@ -169,6 +171,7 @@ declare module "@elegant-router/types" {
     | "multi-menu_first_child"
     | "multi-menu_second_child_home"
     | "notify-platform"
+    | "service"
     | "thread-pool"
     | "user-center"
   >;

@@ -586,6 +586,40 @@ declare namespace App {
             };
           };
         };
+        servicePage: {
+          title: string;
+          pageDescription: string;
+          serviceDetailDescription: string;
+          totalInstances: string;
+          onlineInstances: string;
+          offlineInstances: string;
+          instanceList: string;
+          online: string;
+          offline: string;
+          moreInstances: string;
+          noInstanceData: string;
+          noServiceData: string;
+          refresh: string;
+          clientId: string;
+          applicationName: string;
+          environment: string;
+          version: string;
+          lastHeartbeat: string;
+          registerTime: string;
+          unknown: string;
+          statusFilter: {
+            all: string;
+            online: string;
+            offline: string;
+          };
+          searchPlaceholder: string;
+          actions: {
+            search: string;
+            refresh: string;
+            viewDetail: string;
+          };
+          serviceName: string;
+        };
         manage: {
           common: {
             status: {

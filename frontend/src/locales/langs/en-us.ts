@@ -207,6 +207,7 @@ const local: App.I18n.Schema = {
     manage_menu: 'Menu Manage',
     manage_dict: 'Dictionary Manage',
     manage_org: 'Organization Manage',
+    service: 'Service Management',
     'thread-pool': 'Thread Pool Management',
     'notify-platform': 'Notify Platform Management',
     monitor: 'Monitor Logs',
@@ -416,6 +417,7 @@ const local: App.I18n.Schema = {
         email: 'Email',
         status: 'User Status',
         userRole: 'User Role',
+        userPosition: 'Position',
         userOrgUnits: 'User Organization',
         form: {
           userName: 'Please enter user name',
@@ -426,6 +428,7 @@ const local: App.I18n.Schema = {
           email: 'Please enter email',
           status: 'Please select user status',
           userRole: 'Please select user role',
+          userPosition: 'Please enter position',
           userOrgUnits: 'Please select user organization'
         },
         addUser: 'Add User',
@@ -636,6 +639,40 @@ const local: App.I18n.Schema = {
           variable: 'System Variable'
         }
       }
+    },
+    servicePage: {
+      title: 'Service',
+      pageDescription: 'Manage and monitor service instance status',
+      serviceDetailDescription: 'Service instance detail information',
+      totalInstances: 'Total Instances',
+      onlineInstances: 'Online Instances',
+      offlineInstances: 'Offline Instances',
+      instanceList: 'Instance List',
+      online: 'Online',
+      offline: 'Offline',
+      moreInstances: '{count} more instances',
+      noInstanceData: 'No instance data',
+      noServiceData: 'No service data',
+      refresh: 'Refresh',
+      clientId: 'Client ID',
+      applicationName: 'Application Name',
+      environment: 'Environment',
+      version: 'Version',
+      lastHeartbeat: 'Last Heartbeat',
+      registerTime: 'Register Time',
+      unknown: 'Unknown',
+      statusFilter: {
+        all: 'All',
+        online: 'Online',
+        offline: 'Offline'
+      },
+      searchPlaceholder: 'Please enter keyword',
+      actions: {
+        search: 'Search',
+        refresh: 'Refresh',
+        viewDetail: 'View Detail'
+      },
+      serviceName: 'Service Name'
     },
     monitor: {
       percentage: '{value} %',

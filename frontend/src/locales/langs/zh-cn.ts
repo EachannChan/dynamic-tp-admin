@@ -207,6 +207,7 @@ const local: App.I18n.Schema = {
     manage_menu: '菜单管理',
     manage_dict: '字典管理',
     manage_org: '组织管理',
+    service: '服务管理',
     'thread-pool': '线程池管理',
     'notify-platform': '告警渠道管理',
     monitor: '日志管理',
@@ -414,6 +415,7 @@ const local: App.I18n.Schema = {
         email: '邮箱',
         status: '用户状态',
         userRole: '用户角色',
+        userPosition: '职位',
         userOrgUnits: '用户组织',
         form: {
           userName: '请输入用户名',
@@ -424,6 +426,7 @@ const local: App.I18n.Schema = {
           email: '请输入邮箱',
           status: '请选择用户状态',
           userRole: '请选择用户角色',
+          userPosition: '请输入职位',
           userOrgUnits: '请选择用户组织'
         },
         addUser: '新增用户',
@@ -634,6 +637,40 @@ const local: App.I18n.Schema = {
           variable: '系统变量'
         }
       }
+    },
+    servicePage: {
+      title: '服务',
+      pageDescription: '管理和监控服务实例状态',
+      serviceDetailDescription: '服务实例详细信息',
+      totalInstances: '实例总数',
+      onlineInstances: '在线实例',
+      offlineInstances: '离线实例',
+      instanceList: '实例列表',
+      online: '在线',
+      offline: '离线',
+      moreInstances: '还有 {count} 个实例',
+      noInstanceData: '暂无实例数据',
+      noServiceData: '暂无服务数据',
+      refresh: '刷新',
+      clientId: '客户端ID',
+      applicationName: '应用名称',
+      environment: '环境',
+      version: '版本',
+      lastHeartbeat: '最后心跳时间',
+      registerTime: '注册时间',
+      unknown: '未知',
+      statusFilter: {
+        all: '全部',
+        online: '在线',
+        offline: '离线'
+      },
+      searchPlaceholder: '请输入关键词',
+      actions: {
+        search: '搜索',
+        refresh: '刷新',
+        viewDetail: '查看详情'
+      },
+      serviceName: '服务名称'
     },
     monitor: {
       percentage: '{value} %',

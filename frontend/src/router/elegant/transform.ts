@@ -211,6 +211,7 @@ const routeMap: RouteMap = {
   "multi-menu_second_child": "/multi-menu/second/child",
   "multi-menu_second_child_home": "/multi-menu/second/child/home",
   "notify-platform": "/notify-platform",
+  "service": "/service",
   "thread-pool": "/thread-pool",
   "user-center": "/user-center"
 };

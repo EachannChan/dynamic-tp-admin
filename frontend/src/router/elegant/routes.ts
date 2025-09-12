@@ -392,6 +392,16 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'service',
+    path: '/service',
+    component: 'layout.base$view.service',
+    meta: {
+      title: 'service',
+      i18nKey: 'route.service'
+    }
+  },
+
+  {
     name: 'thread-pool',
     path: '/thread-pool',
     component: 'layout.base$view.thread-pool',
