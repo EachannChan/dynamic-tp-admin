@@ -118,7 +118,7 @@ const local: App.I18n.Schema = {
     },
     fixedHeaderAndTab: '固定头部和标签栏',
     header: {
-      height: '头部高度',
+      height: '头部高��',
       breadcrumb: {
         visible: '显示面包屑',
         showIcon: '显示面包屑图标'
@@ -465,7 +465,7 @@ const local: App.I18n.Schema = {
         hideInMenu: '隐藏菜单',
         activeMenu: '高亮的菜单',
         multiTab: '支持多页签',
-        fixedIndexInTab: '固定在页签中的序号',
+        fixedIndexInTab: '固定���页签中的序号',
         query: '路由参数',
         status: '菜单状态',
         detail: '菜单详情',
@@ -482,7 +482,7 @@ const local: App.I18n.Schema = {
           icon: '请输入图标',
           localIcon: '请选择本地图标',
           sort: '请输入排序',
-          keepAlive: '请选择是否缓存路由',
+          keepAlive: '请选择��否缓存路由',
           href: '请输入外链',
           iframeUrl: '请输入内嵌链接',
           hideInMenu: '请选择是否隐藏菜单',
@@ -574,7 +574,7 @@ const local: App.I18n.Schema = {
           enUS: '请输入字典项英文',
           color: '请选择颜色',
           type: '请选择类型',
-          sort: '请输入排序',
+          sort: '请输入排���',
           status: '请选择字典项状态',
           description: '请输入字典描述'
         },
@@ -654,8 +654,6 @@ const local: App.I18n.Schema = {
       refresh: '刷新',
       clientId: '客户端ID',
       applicationName: '应用名称',
-      environment: '环境',
-      version: '版本',
       lastHeartbeat: '最后心跳时间',
       registerTime: '注册时间',
       unknown: '未知',

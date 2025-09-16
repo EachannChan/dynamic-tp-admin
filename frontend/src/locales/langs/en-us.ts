@@ -656,8 +656,6 @@ const local: App.I18n.Schema = {
       refresh: 'Refresh',
       clientId: 'Client ID',
       applicationName: 'Application Name',
-      environment: 'Environment',
-      version: 'Version',
       lastHeartbeat: 'Last Heartbeat',
       registerTime: 'Register Time',
       unknown: 'Unknown',

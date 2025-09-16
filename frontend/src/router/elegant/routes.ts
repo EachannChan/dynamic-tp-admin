@@ -400,7 +400,6 @@ export const generatedRoutes: GeneratedRoute[] = [
       i18nKey: 'route.service'
     }
   },
-
   {
     name: 'thread-pool',
     path: '/thread-pool',

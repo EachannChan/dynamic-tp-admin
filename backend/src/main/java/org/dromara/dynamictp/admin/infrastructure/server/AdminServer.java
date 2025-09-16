@@ -184,13 +184,13 @@ public class AdminServer {
     }
 
     /**
-     * 根据客户端地址获取客户端名称
+     * 根据客户端地址获取客户端服务名称
      *
      * @param clientAddress 客户端地址
-     * @return 客户端名称，如果不存在则返回null
+     * @return 客户端服务名称，如果不存在则返回null
      */
-    public String getClientName(String clientAddress) {
-        return serverConnectProcessor.getClientName(clientAddress);
+    public String getClientServiceName(String clientAddress) {
+        return serverConnectProcessor.getClientServiceName(clientAddress);
     }
 
     public String getAttribute(String clientAddress, String key) {

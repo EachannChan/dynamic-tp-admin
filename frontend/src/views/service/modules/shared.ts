@@ -13,8 +13,6 @@ export interface ServiceInstance {
   lastHeartbeat: string;
   registerTime: string;
   applicationName: string;
-  environment: string;
-  version: string;
 }
 
 // 服务接口
@@ -97,7 +95,7 @@ export const serviceUtils = {
    * 获取健康状态文本
    */
   getHealthText(instance: ServiceInstance): string {
-    if (instance.status === 'offline') return '离线';
+    if (instance.status === 'offline') return '已离线';
 
     try {
       const lastHeartbeat = new Date(instance.lastHeartbeat);

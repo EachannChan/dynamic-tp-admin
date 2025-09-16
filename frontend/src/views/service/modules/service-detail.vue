@@ -79,7 +79,7 @@ function handleStatusFilter(status: string) {
 
 // 返回服务列表
 function goBack() {
-  router.push({ name: 'ServiceList' });
+  router.push({ name: 'service' });
 }
 
 onMounted(() => {

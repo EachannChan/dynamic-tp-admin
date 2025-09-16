@@ -124,7 +124,7 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
             }
 
             // 获取该客户端的线程池配置
-            String clientName = adminServer.getClientName(clientAddress);
+            String clientName = adminServer.getClientServiceName(clientAddress);
             List<ManThreadPool> configs = getByClientName(clientName);
 
             if (configs.isEmpty()) {

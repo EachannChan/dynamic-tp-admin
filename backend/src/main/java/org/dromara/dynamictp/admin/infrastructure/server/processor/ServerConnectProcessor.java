@@ -54,18 +54,18 @@ public class ServerConnectProcessor implements ConnectionEventProcessor {
     /**
      * 安全地添加客户端连接
      * 
-     * @param clientName 客户端名称
+     * @param clientServiceName 客户端服务名称
      * @param connection 连接对象
      */
-    public void addClientConnection(String clientName, Connection connection) {
-        if (clientName == null || clientName.trim().isEmpty() || connection == null) {
+    public void addClientConnection(String clientServiceName, Connection connection) {
+        if (clientServiceName == null || clientServiceName.trim().isEmpty() || connection == null) {
             log.warn("Invalid client connection parameters: clientName={}, connection={}",
-                    clientName, connection);
+                    clientServiceName, connection);
             return;
         }
 
         try {
-            String normalizedName = clientName.trim();
+            String normalizedName = clientServiceName.trim();
             // 直接从Connection中获取远程地址
             String clientAddress = connection.getRemoteAddress().getHostString() + ":"
                     + connection.getRemoteAddress().getPort();
@@ -76,7 +76,7 @@ public class ServerConnectProcessor implements ConnectionEventProcessor {
             log.info("Client connected: {} (address: {}), total connected clients: {}",
                     normalizedName, clientAddress, connectedClients.size());
         } catch (Exception e) {
-            log.error("Failed to add client connection: {}", clientName, e);
+            log.error("Failed to add client connection: {}", clientServiceName, e);
         }
     }
 
@@ -194,9 +194,9 @@ public class ServerConnectProcessor implements ConnectionEventProcessor {
      * 根据客户端地址获取客户端名称
      * 
      * @param clientAddress 客户端地址
-     * @return 客户端名称，如果不存在则返回null
+     * @return 客户端服务名称，如果不存在则返回null
      */
-    public String getClientName(String clientAddress) {
+    public String getClientServiceName(String clientAddress) {
         return clientAddress != null ? clientAddressToNameMap.get(clientAddress.trim()) : null;
     }
 
@@ -221,11 +221,11 @@ public class ServerConnectProcessor implements ConnectionEventProcessor {
     /**
      * 处理客户端连接事件（兼容旧接口）
      * 
-     * @param clientName 客户端名称
+     * @param name 客户端名称:服务名称
      * @param connection 连接对象
      */
-    public void onConnect(String clientName, Connection connection) {
-        addClientConnection(clientName, connection);
+    public void onConnect(String name, Connection connection) {
+        addClientConnection(name, connection);
     }
 
     /**

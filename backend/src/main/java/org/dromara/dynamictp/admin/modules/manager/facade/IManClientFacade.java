@@ -92,10 +92,10 @@ public interface IManClientFacade {
   /**
    * 检查客户端状态
    *
-   * @param clientName 客户端名
+   * @param clientServiceName 客户端名
    * @return {@link Boolean} 客户端是否正常
    */
-  Boolean checkClientStatus(String clientName);
+  Boolean checkClientStatus(String clientServiceName);
 
   /**
    * 标记客户端为离线
@@ -113,21 +113,9 @@ public interface IManClientFacade {
   List<String> getUnresponsiveClients();
 
   /**
-   * 处理客户端连接 - 检查并更新客户端数据
-   * 当客户端连接时，首先检查数据库是否有相关数据
-   * 若没有则新增客户端数据，若有则更新需要更新的字段
-   *
-   * @param clientId      客户端ID
-   * @param clientName    客户端名称
-   * @param clientType    客户端类型
-   * @param clientVersion 客户端版本
-   * @param clientIp      客户端IP地址
-   * @param clientPort    客户端端口
-   * @param serverIp      服务端IP地址
-   * @param serverPort    服务端端口
-   * @return {@link Boolean} 处理结果
+   * 处理客户端连接
    */
-  Boolean handleClientConnection(String clientId, String clientName, String clientType,
-      String clientVersion, String clientIp, Integer clientPort,
+  Boolean handleClientConnection(String clientId, String clientName, String serviceName, String clientIp,
+      Integer clientPort,
       String serverIp, Integer serverPort);
 }

@@ -7,8 +7,6 @@
         <id column="id" property="id"/>
         <result column="client_id" property="clientId"/>
         <result column="client_name" property="clientName"/>
-        <result column="client_type" property="clientType"/>
-        <result column="client_version" property="clientVersion"/>
         <result column="client_ip" property="clientIp"/>
         <result column="client_port" property="clientPort"/>
         <result column="server_ip" property="serverIp"/>
@@ -30,4 +28,4 @@
         <result column="is_deleted" property="deleted"/>
     </resultMap>
 
-</mapper> 
+</mapper>

@@ -8,10 +8,8 @@ declare namespace Api {
       clientId: string;
       /** 客户端名称 */
       clientName: string;
-      /** 客户端类型 */
-      clientType: string;
-      /** 客户端版本 */
-      clientVersion: string;
+      /** 服务名称 */
+      serviceName: string;
       /** 客户端IP地址 */
       clientIp: string;
       /** 客户端端口 */
@@ -51,7 +49,7 @@ declare namespace Api {
 
     /** 客户端查询参数 */
     type ClientQueryParams = CommonType.RecordNullable<
-      Pick<Api.Manage.Client, 'clientId' | 'clientName' | 'isOnline' | 'status'> &
+      Pick<Api.Manage.Client, 'clientId' | 'clientName' | 'serviceName' | 'isOnline' | 'status'> &
         Api.Common.CommonSearchParams & {
           /** 查询类型：page-分页查询, detail-详情查询, online-在线客户端, unresponsive-无响应客户端 */
           type?: 'page' | 'detail' | 'online' | 'unresponsive';

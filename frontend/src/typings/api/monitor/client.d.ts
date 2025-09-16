@@ -6,6 +6,8 @@ declare namespace Api {
       clientId: string;
       /** 客户端名称 */
       clientName: string;
+      /** 服务名称 */
+      serviceName: string;
       /** 客户端IP地址 */
       clientIp: string;
       /** 客户端端口 */
@@ -26,10 +28,6 @@ declare namespace Api {
       completedTaskCount: number;
       /** 应用名称 */
       applicationName?: string;
-      /** 环境信息 */
-      environment?: string;
-      /** 版本信息 */
-      version?: string;
     };
   }
 }

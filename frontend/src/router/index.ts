@@ -16,6 +16,16 @@ export const router = createRouter({
   routes: createBuiltinVueRoutes()
 });
 
+// 添加服务详情动态路由
+router.addRoute({
+  name: 'ServiceDetail',
+  path: '/service/:serviceName',
+  component: () => import('@/views/service/modules/service-detail.vue'),
+  meta: {
+    title: 'ServiceDetail'
+  }
+});
+
 /** Setup Vue Router */
 export async function setupRouter(app: App) {
   app.use(router);

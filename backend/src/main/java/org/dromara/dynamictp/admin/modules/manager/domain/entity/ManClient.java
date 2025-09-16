@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
  * 客户端管理 Entity 实体类
  *
  * @Author eachann
- * @ProjectName panis-boot
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.entity.ManClient
  * @CreateTime 2025/01/30 - 10:00
  */
@@ -39,14 +38,9 @@ public class ManClient extends BaseEntity {
   private String clientName;
 
   /**
-   * 客户端类型
+   * 服务名称
    */
-  private String clientType;
-
-  /**
-   * 客户端版本
-   */
-  private String clientVersion;
+  private String serviceName;
 
   /**
    * 客户端IP地址

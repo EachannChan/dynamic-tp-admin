@@ -25,11 +25,8 @@ public class ManClientBO {
   @Schema(description = "客户端名称")
   private String clientName;
 
-  @Schema(description = "客户端类型")
-  private String clientType;
-
-  @Schema(description = "客户端版本")
-  private String clientVersion;
+  @Schema(description = "服务名称")
+  private String serviceName;
 
   @Schema(description = "客户端IP地址")
   private String clientIp;

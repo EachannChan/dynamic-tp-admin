@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useServiceApi } from '@/service/api/service';
 import ServiceSearch from './modules/service-search.vue';
 import ServiceCard from './modules/service-card.vue';
+import ServiceDetailModal from './modules/service-detail-modal.vue';
 import { type Service } from './modules/shared';
 
 const router = useRouter();
@@ -13,6 +14,10 @@ const serviceApi = useServiceApi();
 const services = ref<Service[]>([]);
 const loading = ref(false);
 const searchKeyword = ref('');
+
+// 服务详情弹窗相关
+const showDetailModal = ref(false);
+const selectedServiceName = ref('');
 
 // 计算属性
 const filteredServices = computed(() => {
@@ -44,12 +49,16 @@ function handleSearch(keyword: string) {
   searchKeyword.value = keyword;
 }
 
-// 查看服务详情
+// 查看服务详情 - 改为打开弹窗
 function viewServiceDetail(serviceName: string) {
-  router.push({
-    name: 'ServiceDetail',
-    params: { serviceName }
-  });
+  selectedServiceName.value = serviceName;
+  showDetailModal.value = true;
+}
+
+// 关闭详情弹窗
+function closeDetailModal() {
+  showDetailModal.value = false;
+  selectedServiceName.value = '';
 }
 
 onMounted(() => {
@@ -59,12 +68,6 @@ onMounted(() => {
 
 <template>
   <div class="p-6">
-    <!-- 页面标题 -->
-    <div class="mb-6">
-      <h1 class="text-2xl text-gray-900 font-bold">{{ $t('page.servicePage.title') }}</h1>
-      <p class="mt-1 text-sm text-gray-500">{{ $t('page.servicePage.pageDescription') }}</p>
-    </div>
-
     <!-- 搜索和操作栏 -->
     <ServiceSearch :loading="loading"
                    @search="handleSearch"
@@ -94,5 +97,10 @@ onMounted(() => {
                      @view-detail="viewServiceDetail" />
       </div>
     </NCard>
+
+    <!-- 服务详情弹窗 -->
+    <ServiceDetailModal v-model:show="showDetailModal"
+                         :service-name="selectedServiceName"
+                         @close="closeDetailModal" />
   </div>
 </template>

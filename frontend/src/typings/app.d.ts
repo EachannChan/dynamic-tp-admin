@@ -602,8 +602,6 @@ declare namespace App {
           refresh: string;
           clientId: string;
           applicationName: string;
-          environment: string;
-          version: string;
           lastHeartbeat: string;
           registerTime: string;
           unknown: string;

@@ -117,7 +117,7 @@ public class ManClientController {
         if (clientForStatus == null) {
           return Result.failure("客户端不存在或不在线");
         }
-        return Result.status(iManClientFacade.checkClientStatus(clientForStatus.getClientName()));
+        return Result.status(iManClientFacade.checkClientStatus(clientForStatus.getClientName()+":"+clientForStatus.getServiceName()));
 
       case "connect":
         if (clientName == null) {
@@ -206,8 +206,7 @@ public class ManClientController {
     return Result.status(iManClientFacade.handleClientConnection(
         manClientBO.getClientId(),
         manClientBO.getClientName(),
-        manClientBO.getClientType(),
-        manClientBO.getClientVersion(),
+        manClientBO.getServiceName(),
         manClientBO.getClientIp(),
         manClientBO.getClientPort(),
         manClientBO.getServerIp(),

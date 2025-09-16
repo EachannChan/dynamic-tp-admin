@@ -84,9 +84,9 @@ public class ManClientFacadeImpl implements IManClientFacade {
   }
 
   @Override
-  public Boolean checkClientStatus(String clientName) {
-    log.info("检查客户端状态，参数：clientName={}", clientName);
-    return manClientService.checkClientStatus(clientName);
+  public Boolean checkClientStatus(String clientServiceName) {
+    log.info("检查客户端状态，参数：clientName={}", clientServiceName);
+    return manClientService.checkClientStatus(clientServiceName);
   }
 
   @Override
@@ -102,13 +102,13 @@ public class ManClientFacadeImpl implements IManClientFacade {
   }
 
   @Override
-  public Boolean handleClientConnection(String clientId, String clientName, String clientType,
-      String clientVersion, String clientIp, Integer clientPort,
+  public Boolean handleClientConnection(String clientId, String clientName, String serviceName, String clientIp,
+      Integer clientPort,
       String serverIp, Integer serverPort) {
     log.info(
-        "处理客户端连接，参数：clientId={}, clientName={}, clientType={}, clientVersion={}, clientIp={}, clientPort={}, serverIp={}, serverPort={}",
-        clientId, clientName, clientType, clientVersion, clientIp, clientPort, serverIp, serverPort);
-    return manClientService.handleClientConnection(clientId, clientName, clientType, clientVersion,
-        clientIp, clientPort, serverIp, serverPort);
+        "处理客户端连接，参数：clientId={}, clientName={}, serviceName={}, clientIp={}, clientPort={}, serverIp={}, serverPort={}",
+        clientId, clientName, serviceName, clientIp, clientPort, serverIp, serverPort);
+    return manClientService.handleClientConnection(clientId, clientName, serviceName, clientIp, clientPort, serverIp,
+        serverPort);
   }
 }

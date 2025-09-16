@@ -38,6 +38,21 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
     this.clientHttpConnector = clientHttpConnector;
   }
 
+  /**
+   * 生成服务名称，格式：clientName:serviceName
+   * 如果serviceName为空或null，则使用默认的"service"
+   *
+   * @param clientName  客户端名称
+   * @param serviceName 服务名称（可为空）
+   * @return 格式化后的服务名称
+   */
+  private String generateServiceName(String clientName, String serviceName) {
+    if (serviceName == null || serviceName.trim().isEmpty()) {
+      return clientName + ":service";
+    }
+    return clientName + ":" + serviceName;
+  }
+
   @Override
   public IPage<ManClient> listManagerClientPage(PageQuery pageQuery, ManClientBO manClientBO) {
     LambdaQueryWrapper<ManClient> queryWrapper = new LambdaQueryWrapper<>();
@@ -50,6 +65,11 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
     // 根据客户端名称过滤
     if (manClientBO != null && manClientBO.getClientName() != null) {
       queryWrapper.like(ManClient::getClientName, manClientBO.getClientName());
+    }
+
+    // 根据服务名称过滤
+    if (manClientBO != null && manClientBO.getServiceName() != null) {
+      queryWrapper.like(ManClient::getServiceName, manClientBO.getServiceName());
     }
 
     // 根据在线状态过滤
@@ -83,6 +103,15 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
 
     ManClient client = new ManClient();
     BeanUtils.copyProperties(manClientBO, client);
+
+    // 确保serviceName格式正确
+    if (client.getServiceName() == null || client.getServiceName().trim().isEmpty()) {
+      client.setServiceName(generateServiceName(client.getClientName(), null));
+    } else if (!client.getServiceName().contains(":")) {
+      // 如果serviceName不包含冒号，则按clientName:serviceName格式重新生成
+      client.setServiceName(generateServiceName(client.getClientName(), client.getServiceName()));
+    }
+
     return this.save(client);
   }
 
@@ -108,6 +137,14 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
 
     ManClient client = new ManClient();
     BeanUtils.copyProperties(manClientBO, client);
+
+    // 确保serviceName格式正确
+    if (client.getServiceName() != null && !client.getServiceName().trim().isEmpty()
+        && !client.getServiceName().contains(":")) {
+      // 如果serviceName不包含冒号，则按clientName:serviceName格式重新生成
+      client.setServiceName(generateServiceName(client.getClientName(), client.getServiceName()));
+    }
+
     log.info("更新客户端配置，ID: {}, 客户端ID: {}", client.getId(), client.getClientId());
     return this.updateById(client);
   }
@@ -188,19 +225,19 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
   }
 
   @Override
-  public Boolean checkClientStatus(String clientName) {
+  public Boolean checkClientStatus(String clientServiceName) {
     try {
       LambdaQueryWrapper<ManClient> queryWrapper = new LambdaQueryWrapper<>();
-      queryWrapper.eq(ManClient::getClientName, clientName);
+      queryWrapper.eq(ManClient::getServiceName, clientServiceName);
       ManClient client = this.getOne(queryWrapper);
       if (client == null) {
-        log.warn("客户端 {} 不存在", clientName);
+        log.warn("客户端服务 {} 不存在", clientServiceName);
         return false;
       }
 
       // 检查客户端是否在线
       if (!client.getIsOnline()) {
-        log.warn("客户端 {} 已离线", clientName);
+        log.warn("客户端服务 {} 已离线", clientServiceName);
         return false;
       }
 
@@ -211,15 +248,15 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
         long minutesSinceLastHeartbeat = java.time.Duration.between(lastHeartbeat, now).toMinutes();
 
         if (minutesSinceLastHeartbeat > 5) {
-          log.warn("客户端 {} 超过5分钟无心跳，标记为离线", clientName);
-          updateDisconnectTime(clientName);
+          log.warn("客户端 {} 超过5分钟无心跳，标记为离线", clientServiceName);
+          updateDisconnectTime(clientServiceName);
           return false;
         }
       }
 
       return true;
     } catch (Exception e) {
-      log.error("检查客户端 {} 状态时发生异常: {}", clientName, e.getMessage(), e);
+      log.error("检查客户端 {} 状态时发生异常: {}", clientServiceName, e.getMessage(), e);
       return false;
     }
   }
@@ -244,7 +281,7 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
           long minutesSinceLastHeartbeat = java.time.Duration.between(client.getLastHeartbeatTime(), now).toMinutes();
 
           if (minutesSinceLastHeartbeat > 5) {
-            log.warn("客户端 {} 超过5分钟无心跳，标记为离线", client.getClientName());
+            log.warn("客户�� {} 超过5分钟无心跳，标记为离线", client.getClientName());
             updateDisconnectTime(client.getClientName());
             unresponsiveClients.add(client.getClientId());
           }
@@ -258,26 +295,25 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
   }
 
   @Override
-  public Boolean handleClientConnection(String clientId, String clientName, String clientType,
-      String clientVersion, String clientIp, Integer clientPort,
+  public Boolean handleClientConnection(String clientId, String clientName, String serviceName, String clientIp,
+      Integer clientPort,
       String serverIp, Integer serverPort) {
     try {
-      log.info("处理客户端连接: {}", clientName);
+      // 生成正确格式的serviceName
+      String formattedServiceName = generateServiceName(clientName, serviceName);
+      log.info("处理客户端连接: clientAddress={}, clientName={}, serviceName={}",
+          clientId, clientName, serviceName);
 
-      // 检查数据库中是否已存在该客户端（按ID查询）
       LambdaQueryWrapper<ManClient> existedWrapper = new LambdaQueryWrapper<>();
-      existedWrapper.eq(ManClient::getClientName, clientName);
+      existedWrapper.eq(ManClient::getServiceName, formattedServiceName);
       ManClient existingClient = this.getOne(existedWrapper);
 
       if (existingClient == null) {
-        // 客户端不存在，新增客户端数据
-        log.info("客户端 {} 不存在，新增客户端数据", clientName);
-
+        log.info("客户端不存在，新增: clientId={}, clientName={}", clientId, clientName);
         ManClient newClient = ManClient.builder()
             .clientId(clientId)
             .clientName(clientName)
-            .clientType(clientType)
-            .clientVersion(clientVersion)
+            .serviceName(formattedServiceName)
             .clientIp(clientIp)
             .clientPort(clientPort)
             .serverIp(serverIp)
@@ -288,23 +324,19 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
             .totalOnlineTime(0L)
             .status("ENABLE")
             .build();
-
         boolean result = this.save(newClient);
         if (result) {
-          log.info("客户端 {} 新增成功", clientName);
+          log.info("新增客户端成功: {}", clientId);
         } else {
-          log.error("客户端 {} 新增失败", clientName);
+          log.error("新增客户端失败: {}", clientId);
         }
         return result;
       } else {
-        // 客户端已存在，更新需要更新的字段
-        log.info("客户端 {} 已存在，更新客户端数据", clientName);
-
+        log.info("客户端已存在，更新: clientId={}, clientName={}", clientId, clientName);
         LambdaUpdateWrapper<ManClient> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(ManClient::getClientName, clientName)
-            .set(ManClient::getClientId, clientId)
-            .set(ManClient::getClientType, clientType)
-            .set(ManClient::getClientVersion, clientVersion)
+        updateWrapper.eq(ManClient::getClientId, clientId)
+            .set(ManClient::getClientName, clientName)
+            .set(ManClient::getServiceName, formattedServiceName)
             .set(ManClient::getClientIp, clientIp)
             .set(ManClient::getClientPort, clientPort)
             .set(ManClient::getServerIp, serverIp)
@@ -313,17 +345,16 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
             .set(ManClient::getLastConnectTime, LocalDateTime.now())
             .set(ManClient::getUpdateTime, LocalDateTime.now())
             .setSql("connect_count = connect_count + 1");
-
         boolean result = this.update(updateWrapper);
         if (result) {
-          log.info("客户端 {} 更新成功", clientName);
+          log.info("更新客户端成功: {}", clientId);
         } else {
-          log.error("客户端 {} 更新失败", clientName);
+          log.error("更新客户端失败: {}", clientId);
         }
         return result;
       }
     } catch (Exception e) {
-      log.error("处理客户端 {} 连接时发生异常: {}", clientName, e.getMessage(), e);
+      log.error("处理客户端连接异常 clientId={}, clientName={}, err={}", clientId, clientName, e.getMessage(), e);
       return false;
     }
   }

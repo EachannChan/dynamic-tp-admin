@@ -39,7 +39,6 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     private final AtomicInteger threadCounter = new AtomicInteger(1);
 
     public AdminServerUserProcessor() {
-        // 使用多线程执行器，支持并发处理多个客户端请求
         this.executor = new ThreadPoolExecutor(
                 2,
                 10,
@@ -54,8 +53,6 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
-    // 连接管理方法已迁移到 ServerConnectProcessor 中
-
     @Override
     public Object handleRequest(BizContext bizContext, AdminRequestBody adminRequestBody) {
         String remoteAddress = bizContext.getRemoteAddress();
@@ -64,8 +61,9 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
         Map<String,String> attributes = adminRequestBody.getAttributes();
         clientAttributes.putAll(attributes);
 
-        String clientName = (attributes).get("clientName");
-        serverConnectProcessor.addClientConnection(clientName, bizContext.getConnection());
+        String clientName = attributes.get("clientName");
+        String serviceName = attributes.get("serviceName");
+        serverConnectProcessor.addClientConnection(clientName+":"+serviceName, bizContext.getConnection());
 
         return doHandleRequest(bizContext, adminRequestBody);
     }

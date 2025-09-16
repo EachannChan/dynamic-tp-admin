@@ -8,8 +8,6 @@ export interface ServiceInstance {
   lastHeartbeat: string;
   registerTime: string;
   applicationName: string;
-  environment: string;
-  version: string;
 }
 
 export interface Service {

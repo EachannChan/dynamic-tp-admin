@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import SvgIcon from '@/components/custom/svg-icon.vue';
-import { serviceUtils, type ServiceInstance } from './shared';
 import { $t } from '@/locales';
+import { type ServiceInstance, serviceUtils } from './shared';
 
 interface Props {
   instance: ServiceInstance;
@@ -20,7 +20,7 @@ const formattedRegisterTime = computed(() => serviceUtils.formatTime(props.insta
 </script>
 
 <template>
-  <div class="rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:shadow-md">
+  <div class="border border-gray-200 rounded-lg p-4 transition-all duration-200 hover:shadow-md">
     <div class="flex items-start justify-between">
       <!-- 实例信息 -->
       <div class="flex items-start space-x-4">
@@ -33,9 +33,7 @@ const formattedRegisterTime = computed(() => serviceUtils.formatTime(props.insta
         </div>
         <div class="min-w-0 flex-1">
           <div class="mb-2 flex items-center space-x-2">
-            <h3 class="text-lg font-semibold text-gray-900">
-              {{ instance.clientIp }}:{{ instance.clientPort }}
-            </h3>
+            <h3 class="text-lg text-gray-900 font-semibold">{{ instance.applicationName }}</h3>
             <NTag :type="instanceStatusColor"
                   size="small">
               {{ instanceStatusText }}
@@ -47,16 +45,12 @@ const formattedRegisterTime = computed(() => serviceUtils.formatTime(props.insta
           </div>
           <div class="grid grid-cols-1 gap-2 text-sm text-gray-500 sm:grid-cols-2">
             <div>
-              <span class="font-medium">{{ $t('page.servicePage.clientId') }}:</span> {{ instance.clientId }}
+              <span class="font-medium">{{ $t('page.servicePage.clientId') }}:</span>
+              {{ instance.clientId }}
             </div>
             <div>
-              <span class="font-medium">{{ $t('page.servicePage.applicationName') }}:</span> {{ instance.applicationName || $t('page.servicePage.unknown') }}
-            </div>
-            <div>
-              <span class="font-medium">{{ $t('page.servicePage.environment') }}:</span> {{ instance.environment || $t('page.servicePage.unknown') }}
-            </div>
-            <div>
-              <span class="font-medium">{{ $t('page.servicePage.version') }}:</span> {{ instance.version || $t('page.servicePage.unknown') }}
+              <span class="font-medium">{{ $t('page.servicePage.applicationName') }}:</span>
+              {{ instance.applicationName || $t('page.servicePage.unknown') }}
             </div>
           </div>
         </div>
