@@ -8,9 +8,7 @@ export { default as ServiceList } from './index.vue';
 export { default as ServiceDetail } from './modules/service-detail.vue';
 
 // 子组件
-export { default as ServiceSearch } from './modules/service-search.vue';
 export { default as ServiceCard } from './modules/service-card.vue';
-export { default as InstanceSearch } from './modules/instance-search.vue';
 export { default as InstanceCard } from './modules/instance-card.vue';
 
 // 类型定义和工具函数

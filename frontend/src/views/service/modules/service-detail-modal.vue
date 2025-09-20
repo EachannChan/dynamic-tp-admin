@@ -58,7 +58,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useServiceApi } from '@/service/api/service';
-import InstanceSearch from './instance-search.vue';
 import InstanceCard from './instance-card.vue';
 import { type ServiceInstance, serviceUtils } from './shared';
 

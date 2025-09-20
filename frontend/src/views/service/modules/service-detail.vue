@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useServiceApi } from '@/service/api/service';
 import SvgIcon from '@/components/custom/svg-icon.vue';
-import InstanceSearch from './instance-search.vue';
 import InstanceCard from './instance-card.vue';
 import { type ServiceInstance, serviceUtils } from './shared';
 
@@ -126,12 +125,6 @@ onMounted(() => {
         </div>
       </div>
     </NCard>
-
-    <!-- 搜索和过滤 -->
-    <InstanceSearch :loading="loading"
-                    @search="handleSearch"
-                    @filter="handleStatusFilter"
-                    @refresh="refreshInstances" />
 
     <!-- 实例列表 -->
     <NCard :bordered="false">

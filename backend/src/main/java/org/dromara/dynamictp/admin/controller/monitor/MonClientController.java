@@ -196,6 +196,7 @@ public class MonClientController {
       instance.put("clientPort", clientPort);
       instance.put("status", "online");
       instance.put("lastHeartbeat", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+      instance.put("applicationName", extractServiceName(serviceName));
 
       serviceGroups.computeIfAbsent(clientName, k -> new ArrayList<>()).add(instance);
       // 调用IManClientFacade处理客户端连接，添加或更新客户端数据
@@ -221,6 +222,8 @@ public class MonClientController {
         instance.put("lastHeartbeat", dbClient.getLastHeartbeatTime() != null
             ? dbClient.getLastHeartbeatTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
             : LocalDateTime.now().minusHours(2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        // 新增 applicationName 字段（离线）
+        instance.put("applicationName", extractServiceName(dbClient.getServiceName()));
 
         serviceGroups.computeIfAbsent(dbClient.getClientName(), k -> new ArrayList<>()).add(instance);
       }

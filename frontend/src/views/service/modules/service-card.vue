@@ -76,7 +76,7 @@ function handleViewDetail() {
           <div v-for="instance in service.instances.slice(0, 3)"
                :key="instance.clientId"
                class="flex items-center justify-between rounded bg-gray-50 px-2 py-1 text-xs">
-            <span class="truncate">{{ instance.clientIp }}:{{ instance.clientPort }}</span>
+            <span class="truncate">{{ instance.applicationName }}</span>
             <NTag :type="instance.status === 'online' ? 'success' : 'error'"
                   size="tiny">
               {{ instance.status === 'online' ? $t('page.servicePage.online') : $t('page.servicePage.offline') }}
