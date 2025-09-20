@@ -213,10 +213,10 @@ const local: App.I18n.Schema = {
     monitor: 'Monitor Logs',
 
     'monitor_thread-pool_detail': 'Thread Pool Detail',
-    monitor_logs: 'Logs Monitor',
-    monitor_logs_login: 'Login Logs',
-    monitor_logs_operation: 'Operation Logs',
-    monitor_logs_error: 'Error Logs',
+    logs: 'Logs Monitor',
+    logs_login: 'Login Logs',
+    logs_operation: 'Operation Logs',
+    logs_error: 'Error Logs',
     tools: 'Tools Manage',
 
     'multi-menu': 'Multi Menu',

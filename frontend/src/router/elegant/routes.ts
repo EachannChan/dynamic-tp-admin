@@ -205,6 +205,44 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'logs',
+    path: '/logs',
+    component: 'layout.base',
+    meta: {
+      title: 'logs',
+      i18nKey: 'route.logs'
+    },
+    children: [
+      {
+        name: 'logs_error',
+        path: '/logs/error',
+        component: 'view.logs_error',
+        meta: {
+          title: 'logs_error',
+          i18nKey: 'route.logs_error'
+        }
+      },
+      {
+        name: 'logs_login',
+        path: '/logs/login',
+        component: 'view.logs_login',
+        meta: {
+          title: 'logs_login',
+          i18nKey: 'route.logs_login'
+        }
+      },
+      {
+        name: 'logs_operation',
+        path: '/logs/operation',
+        component: 'view.logs_operation',
+        meta: {
+          title: 'logs_operation',
+          i18nKey: 'route.logs_operation'
+        }
+      }
+    ]
+  },
+  {
     name: 'manage',
     path: '/manage',
     component: 'layout.base',
@@ -266,55 +304,6 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'manage_user-detail',
           i18nKey: 'route.manage_user-detail'
         }
-      }
-    ]
-  },
-  {
-    name: 'monitor',
-    path: '/monitor',
-    component: 'layout.base',
-    meta: {
-      title: 'monitor',
-      i18nKey: 'route.monitor'
-    },
-    children: [
-      {
-        name: 'monitor_logs',
-        path: '/monitor/logs',
-        component: 'layout.base',
-        meta: {
-          title: 'monitor_logs',
-          i18nKey: 'route.monitor_logs'
-        },
-        children: [
-          {
-            name: 'monitor_logs_error',
-            path: '/monitor/logs/error',
-            component: 'view.monitor_logs_error',
-            meta: {
-              title: 'monitor_logs_error',
-              i18nKey: 'route.monitor_logs_error'
-            }
-          },
-          {
-            name: 'monitor_logs_login',
-            path: '/monitor/logs/login',
-            component: 'view.monitor_logs_login',
-            meta: {
-              title: 'monitor_logs_login',
-              i18nKey: 'route.monitor_logs_login'
-            }
-          },
-          {
-            name: 'monitor_logs_operation',
-            path: '/monitor/logs/operation',
-            component: 'view.monitor_logs_operation',
-            meta: {
-              title: 'monitor_logs_operation',
-              i18nKey: 'route.monitor_logs_operation'
-            }
-          }
-        ]
       }
     ]
   },

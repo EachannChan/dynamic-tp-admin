@@ -150,4 +150,10 @@ public interface IManClientService extends IService<ManClient> {
   Boolean handleClientConnection(String clientId, String clientName, String serviceName, String clientIp,
       Integer clientPort,
       String serverIp, Integer serverPort);
+
+  /**
+   * 在系统关机/进程退出时，将所有仍标记为在线的客户端置为离线
+   * @return 下线的客户端数量
+   */
+  int markAllOnlineClientsOffline();
 }

@@ -211,11 +211,10 @@ const local: App.I18n.Schema = {
     'thread-pool': '线程池管理',
     'notify-platform': '告警渠道管理',
     monitor: '日志管理',
-
-    monitor_logs: '日志管理',
-    monitor_logs_login: '登录日志',
-    monitor_logs_operation: '操作日志',
-    monitor_logs_error: '错误日志',
+    logs: '日志管理',
+    logs_login: '登录日志',
+    logs_operation: '操作日志',
+    logs_error: '错误日志',
 
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
@@ -465,7 +464,7 @@ const local: App.I18n.Schema = {
         hideInMenu: '隐藏菜单',
         activeMenu: '高亮的菜单',
         multiTab: '支持多页签',
-        fixedIndexInTab: '固定���页签中的序号',
+        fixedIndexInTab: '固定在页签中的序号',
         query: '路由参数',
         status: '菜单状态',
         detail: '菜单详情',
@@ -669,6 +668,66 @@ const local: App.I18n.Schema = {
         viewDetail: '查看详情'
       },
       serviceName: '服务名称'
+    },logs: {
+      login: {
+        userName: '用户名',
+        userRealName: '真实姓名',
+        ip: '登录 IP',
+        ipAddr: 'IP 所属地',
+        userAgent: 'User-Agent',
+        status: '登录状态',
+        message: '登录信息',
+        createTime: '登录时间',
+        createUser: '登录用户',
+        form: {
+          userName: '请填写用户名',
+          userRealName: '请填写真实姓名'
+        },
+        loginStatus: {
+          fail: '登录失败',
+          success: '登录成功'
+        }
+      },
+      operation: {
+        requestId: '请求 ID',
+        ip: '操作 IP',
+        ipAddr: 'IP 所属地',
+        userAgent: 'User-Agent',
+        requestUri: '请求 URI',
+        requestMethod: '请求方式',
+        contentType: '请求类型',
+        methodName: '操作方法',
+        operation: '操作方法说明',
+        methodParams: '操作参数',
+        useTime: '耗时(ms)',
+        createUser: '操作用户',
+        createTime: '操作时间',
+        form: {
+          createUser: '请填写操作用户'
+        }
+      },
+      error: {
+        requestId: '请求 ID',
+        ip: '操作 IP',
+        ipAddr: 'IP 所属地',
+        userAgent: 'User-Agent',
+        requestUri: '请求 URI',
+        requestMethod: '请求方式',
+        contentType: '请求类型',
+        methodName: '操作方法',
+        operation: '操作方法说明',
+        methodParams: '操作参数',
+        useTime: '耗时(ms)',
+        createUser: '操作用户',
+        createTime: '异常时间',
+        exceptionMessage: '异常信息',
+        exceptionClass: '异常类名',
+        line: '异常行号',
+        stackTrace: '异常堆栈',
+        form: {
+          createUser: '请填写操作用户'
+        }
+      }
     },
     monitor: {
       percentage: '{value} %',

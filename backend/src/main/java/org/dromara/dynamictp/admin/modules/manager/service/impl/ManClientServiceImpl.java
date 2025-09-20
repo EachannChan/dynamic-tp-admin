@@ -304,15 +304,12 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
       Integer clientPort,
       String serverIp, Integer serverPort) {
     try {
-      // 生成正确格式的serviceName
       String formattedServiceName = generateServiceName(clientName, serviceName);
       log.info("处理客户端连接: clientAddress={}, clientName={}, serviceName={}",
           clientId, clientName, serviceName);
-
       LambdaQueryWrapper<ManClient> existedWrapper = new LambdaQueryWrapper<>();
       existedWrapper.eq(ManClient::getServiceName, formattedServiceName);
       ManClient existingClient = this.getOne(existedWrapper);
-
       if (existingClient == null) {
         log.info("客户端不存在，新增: clientId={}, clientName={}", clientId, clientName);
         ManClient newClient = ManClient.builder()
@@ -361,6 +358,34 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
     } catch (Exception e) {
       log.error("处理客户端连接异常 clientId={}, clientName={}, err={}", clientId, clientName, e.getMessage(), e);
       return false;
+    }
+  }
+
+  /**
+   * 批量下线所有在线客户端，用于应用关闭时快速清理状态
+   */
+  @Override
+  public int markAllOnlineClientsOffline() {
+    try {
+      LambdaQueryWrapper<ManClient> queryWrapper = new LambdaQueryWrapper<>();
+      queryWrapper.eq(ManClient::getIsOnline, true);
+      List<ManClient> onlineList = this.list(queryWrapper);
+      if (onlineList.isEmpty()) {
+        return 0;
+      }
+      LocalDateTime now = LocalDateTime.now();
+      LambdaUpdateWrapper<ManClient> updateWrapper = new LambdaUpdateWrapper<>();
+      updateWrapper.eq(ManClient::getIsOnline, true)
+          .set(ManClient::getIsOnline, false)
+          .set(ManClient::getLastDisconnectTime, now)
+          .set(ManClient::getUpdateTime, now);
+      boolean ok = this.update(updateWrapper);
+      int affected = ok ? onlineList.size() : 0;
+      log.info("批量下线在线客户端完成, 计划下线={}, 实际下线={}, success={} ", onlineList.size(), affected, ok);
+      return affected;
+    } catch (Exception e) {
+      log.error("批量下线在线客户端异常: {}", e.getMessage(), e);
+      return 0;
     }
   }
 }
