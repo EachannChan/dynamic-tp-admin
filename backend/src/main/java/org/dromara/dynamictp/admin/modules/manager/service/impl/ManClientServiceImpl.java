@@ -23,7 +23,6 @@ import java.util.List;
  * 客户端管理 Service 服务实现层
  *
  * @Author eachann
- * @ProjectName panis-boot
  * @ClassName org.dromara.dynamictp.admin.modules.manager.service.impl.ManClientServiceImpl
  * @CreateTime 2025/01/30 - 10:00
  */
@@ -160,9 +159,15 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
   }
 
   @Override
-  public ManClient getByClientName(String clientName) {
+  public ManClient getByClientName(String clientServiceName) {
     LambdaQueryWrapper<ManClient> queryWrapper = new LambdaQueryWrapper<>();
-    queryWrapper.eq(ManClient::getClientName, clientName);
+    // 如果传入的是clientServiceName格式（包含冒号），则通过serviceName查找
+    if (clientServiceName != null && clientServiceName.contains(":")) {
+      queryWrapper.eq(ManClient::getServiceName, clientServiceName);
+    } else {
+      // 如果传入的是纯clientName，则通过clientName查找
+      queryWrapper.eq(ManClient::getClientName, clientServiceName);
+    }
     return this.getOne(queryWrapper);
   }
 

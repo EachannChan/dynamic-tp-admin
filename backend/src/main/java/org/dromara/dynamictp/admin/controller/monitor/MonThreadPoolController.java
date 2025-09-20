@@ -42,18 +42,18 @@ public class MonThreadPoolController {
   @NonNull
   private AdminServer adminServer;
 
-  @GetMapping("/{clientName}/page")
+  @GetMapping("/{clientServiceName}/page")
   @SaCheckPermission("mon:thread_pool:page")
   @Operation(operationId = "1", summary = "按客户端分页获取线程池列表")
   @RepeatSubmit(interval = -1)
   public Result<IPage<ThreadPoolStats>> getThreadPoolListByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName,
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName,
       @Parameter(description = "分页参数") PageQuery pageQuery,
       @Parameter(description = "查询条件") MonThreadPoolBO monThreadPoolBO) {
-    log.info("按客户端分页获取线程池列表，clientName={}", clientName);
+    log.info("按客户端分页获取线程池列表，clientServiceName={}", clientServiceName);
 
-    // 根据客户端名称获取客户端地址
-    String clientAddress = adminServer.getClientAddressByName(clientName);
+    // 根据客户端服务名称获取客户端地址
+    String clientAddress = adminServer.getClientAddress(clientServiceName);
     if (clientAddress == null) {
       return Result.failure("客户端不存在或已断开连接");
     }
@@ -98,21 +98,21 @@ public class MonThreadPoolController {
 
       return Result.data(page);
     } catch (Exception e) {
-      log.error("获取客户端线程池数据失败，clientName={}, clientAddress={}", clientName, clientAddress, e);
+      log.error("获取客户端线程池数据失败，clientServiceName={}, clientAddress={}", clientServiceName, clientAddress, e);
       return Result.failure("获取客户端线程池数据失败: " + e.getMessage());
     }
   }
 
-  @GetMapping("/{clientName}/statistics")
+  @GetMapping("/{clientServiceName}/statistics")
   @SaCheckPermission("mon:thread_pool:statistics")
   @Operation(operationId = "2", summary = "按客户端获取线程池统计数据")
   @RepeatSubmit(interval = -1)
   public Result<ThreadPoolStats> getThreadPoolStatisticsByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName) {
-    log.info("按客户端获取线程池统计数据，clientName={}", clientName);
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName) {
+    log.info("按客户端获取线程池统计数据，clientServiceName={}", clientServiceName);
 
-    // 根据客户端名称获取客户端地址
-    String clientAddress = adminServer.getClientAddressByName(clientName);
+    // 根据客户端服务名称获取客户端地址
+    String clientAddress = adminServer.getClientAddress(clientServiceName);
     if (clientAddress == null) {
       return Result.failure("客户端不存在或已断开连接");
     }
@@ -146,8 +146,8 @@ public class MonThreadPoolController {
 
       // 创建汇总统计数据
       ThreadPoolStats statistics = new ThreadPoolStats();
-      statistics.setPoolName("客户端汇总-" + clientName);
-      statistics.setPoolAliasName("Client Summary - " + clientName);
+      statistics.setPoolName("客户端汇总-" + clientServiceName);
+      statistics.setPoolAliasName("Client Summary - " + clientServiceName);
 
       // 计算汇总数据
       int totalPools = clientThreadPools.size();
@@ -164,21 +164,21 @@ public class MonThreadPoolController {
 
       return Result.data(statistics);
     } catch (Exception e) {
-      log.error("获取客户端线程池数据失败，clientName={}, clientAddress={}", clientName, clientAddress, e);
+      log.error("获取客户端线程池数据失败，clientServiceName={}, clientAddress={}", clientServiceName, clientAddress, e);
       return Result.failure("获取客户端线程池数据失败: " + e.getMessage());
     }
   }
 
-  @GetMapping("/{clientName}/metrics")
+  @GetMapping("/{clientServiceName}/metrics")
   @SaCheckPermission("mon:thread_pool:metrics")
   @Operation(operationId = "3", summary = "按客户端获取线程池实时指标")
   @RepeatSubmit(interval = -1)
   public Result<List<ThreadPoolStats>> getThreadPoolMetricsByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName) {
-    log.info("按客户端获取线程池实时指标，clientName={}", clientName);
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName) {
+    log.info("按客户端获取线程池实时指标，clientServiceName={}", clientServiceName);
 
-    // 根据客户端名称获取客户端地址
-    String clientAddress = adminServer.getClientAddressByName(clientName);
+    // 根据客户端服务名称获取客户端地址
+    String clientAddress = adminServer.getClientAddress(clientServiceName);
     if (clientAddress == null) {
       return Result.failure("客户端不存在或已断开连接");
     }
@@ -208,7 +208,7 @@ public class MonThreadPoolController {
 
       return Result.data(new ArrayList<>());
     } catch (Exception e) {
-      log.error("获取客户端线程池数据失败，clientName={}, clientAddress={}", clientName, clientAddress, e);
+      log.error("获取客户端线程池数据失败，clientServiceName={}, clientAddress={}", clientServiceName, clientAddress, e);
       return Result.failure("获取客户端线程池数据失败: " + e.getMessage());
     }
   }

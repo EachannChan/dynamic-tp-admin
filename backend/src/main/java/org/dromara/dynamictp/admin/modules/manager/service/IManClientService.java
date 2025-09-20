@@ -60,12 +60,15 @@ public interface IManClientService extends IService<ManClient> {
   ManClient getManagerClient(Long id);
 
   /**
-   * 根据客户端名称获取客户端信息
+   * 根据客户端名称或客户端服务名称获取客户端信息
+   * 支持两种格式：
+   * 1. clientName - 纯客户端名称
+   * 2. clientServiceName - 客户端服务名称（格式：clientName:serviceName）
    *
-   * @param clientName 客户端名称
+   * @param clientServiceName 客户端名称或客户端服务名称
    * @return {@link ManClient} 客户端信息
    */
-  ManClient getByClientName(String clientName);
+  ManClient getByClientName(String clientServiceName);
 
   /**
    * 获取所有在线的客户端

@@ -208,7 +208,10 @@ async function loadNotifyPlatforms() {
   }
 
   try {
-    const { error, data } = await fetchGetNotifyPlatformByClient(selectedClientName.value);
+    const clientServiceName = selectedClient.value?.serviceName
+      ? `${selectedClient.value.clientName}:${selectedClient.value.serviceName}`
+      : selectedClient.value?.clientName;
+    const { error, data } = await fetchGetNotifyPlatformByClient(clientServiceName);
     if (!error && data) {
       // 转换为通知配置组件需要的格式
       platformOptions.value = data
@@ -318,7 +321,10 @@ async function loadData() {
       pageSize: pagination.value.pageSize
     };
 
-    const { error, data: responseData } = await fetchGetThreadPoolPageByClient(selectedClientName.value, params);
+    const clientServiceName = selectedClient.value?.serviceName
+      ? `${selectedClient.value.clientName}:${selectedClient.value.serviceName}`
+      : selectedClient.value?.clientName;
+    const { error, data: responseData } = await fetchGetThreadPoolPageByClient(clientServiceName, params);
 
     if (!error && responseData) {
       data.value = responseData.records || [];
@@ -369,7 +375,10 @@ async function syncClient() {
   }
 
   try {
-    const { error } = await fetchRefreshThreadPool(selectedClientName.value);
+    const clientServiceName = selectedClient.value?.serviceName
+      ? `${selectedClient.value.clientName}:${selectedClient.value.serviceName}`
+      : selectedClient.value?.clientName;
+    const { error } = await fetchRefreshThreadPool(clientServiceName);
     if (!error) {
       message.success('同步客户端成功');
       loadData();

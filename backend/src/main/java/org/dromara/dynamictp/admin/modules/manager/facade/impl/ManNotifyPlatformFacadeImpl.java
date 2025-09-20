@@ -75,8 +75,8 @@ public class ManNotifyPlatformFacadeImpl implements IManNotifyPlatformFacade {
   }
 
   @Override
-  public List<ManNotifyPlatform> getByClientName(String clientName) {
-    return manNotifyPlatformService.getByClientName(clientName);
+  public List<ManNotifyPlatform> getByClientName(String clientServiceName) {
+    return manNotifyPlatformService.getByClientName(clientServiceName);
   }
 
   @Override

@@ -63,18 +63,17 @@ public class ManThreadPoolController {
         .data(iManThreadPoolFacade.listManagerThreadPoolPage(pageQuery, managerThreadPoolBO));
   }
 
-  @GetMapping("/by-client/{clientName}/page")
+  @GetMapping("/by-client/{clientServiceName}/page")
   @SaCheckPermission("man:thread_pool:page")
   @Operation(operationId = "1.1", summary = "按客户端分页获取线程池列表")
   public Result<IPage<ManThreadPool>> getThreadPoolPageByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName,
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName,
       @Parameter(description = "分页参数") PageQuery pageQuery,
       @Parameter(description = "查询条件") ManThreadPoolBO managerThreadPoolBO) {
-    log.info("按客户端分页获取线程池列表，参数：clientName={}, pageQuery={}, managerThreadPoolBO={}", clientName, pageQuery,
-        managerThreadPoolBO);
+    log.info("按客户端分页获取线程池列表，参数：clientServiceName={}", clientServiceName);
 
-    // 验证客户端是否存在且在线（通过 clientName 获取）
-    var client = manClientService.getByClientName(clientName);
+    // 验证客户端是否存在且在线（通过 clientServiceName 获取）
+    var client = manClientService.getByClientName(clientServiceName);
     if (client == null) {
       return Result.failure("客户端不存在");
     }
@@ -86,7 +85,7 @@ public class ManThreadPoolController {
     if (managerThreadPoolBO == null) {
       managerThreadPoolBO = new ManThreadPoolBO();
     }
-    managerThreadPoolBO.setClientName(client.getClientName());
+    managerThreadPoolBO.setClientName(client.getServiceName());
 
     return Result
         .data(iManThreadPoolFacade.listManagerThreadPoolPage(pageQuery, managerThreadPoolBO));
@@ -138,15 +137,15 @@ public class ManThreadPoolController {
     return Result.data(iManThreadPoolFacade.getManagerThreadPool(id));
   }
 
-  @PostMapping("/refresh/{clientName}")
+  @PostMapping("/refresh/{clientServiceName}")
   @SaCheckPermission("man:thread_pool:refresh")
   @Operation(operationId = "6", summary = "刷新指定客户端的线程池")
   public Result<Boolean> refreshThreadPool(
-      @Parameter(description = "客户端名称") @PathVariable String clientName) {
-    log.info("刷新指定客户端的线程池，参数：clientName={}", clientName);
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName) {
+    log.info("刷新指定客户端的线程池，参数：clientServiceName={}", clientServiceName);
 
-    // 验证客户端是否存在且在线（通过 clientName 获取）
-    var client = manClientService.getByClientName(clientName);
+    // 验证客户端是否存在且在线（通过 clientServiceName 获取）
+    var client = manClientService.getByClientName(clientServiceName);
     if (client == null) {
       return Result.failure("客户端不存在");
     }
@@ -156,11 +155,11 @@ public class ManThreadPoolController {
 
     // 验证AdminServer中是否连接
     Set<String> connectedClients = adminServer.getConnectedClients();
-    if (!connectedClients.contains(client.getClientName())) {
+    if (!connectedClients.contains(client.getServiceName())) {
       return Result.failure("客户端未连接到AdminServer");
     }
 
-    return Result.status(iManThreadPoolFacade.refreshThreadPool(client.getClientId()));
+    return Result.status(iManThreadPoolFacade.refreshThreadPool(adminServer.getClientAddressByName(client.getServiceName())));
   }
 
   @PostMapping("/refresh/all")
@@ -171,20 +170,20 @@ public class ManThreadPoolController {
     return Result.status(iManThreadPoolFacade.refreshAllThreadPools());
   }
 
-  @GetMapping("/by-client/{clientName}")
+  @GetMapping("/by-client/{clientServiceName}")
   @SaCheckPermission("man:thread_pool:list")
   @Operation(operationId = "8", summary = "获取指定客户端的线程池")
   public Result<List<ManThreadPool>> getByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName) {
-    log.info("获取指定客户端的线程池，参数：clientName={}", clientName);
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName) {
+    log.info("获取指定客户端的线程池，参数：clientServiceName={}", clientServiceName);
 
-    // 验证客户端是否存在（通过 clientName 获取）
-    var client = manClientService.getByClientName(clientName);
+    // 验证客户端是否存在（通过 clientServiceName 获取）
+    var client = manClientService.getByClientName(clientServiceName);
     if (client == null) {
       return Result.failure("客户端不存在");
     }
 
-    return Result.data(iManThreadPoolFacade.getByClientName(clientName));
+    return Result.data(iManThreadPoolFacade.getByClientName(clientServiceName));
   }
 
   @GetMapping("/clients")

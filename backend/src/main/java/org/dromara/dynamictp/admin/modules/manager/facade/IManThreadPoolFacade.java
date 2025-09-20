@@ -92,12 +92,15 @@ public interface IManThreadPoolFacade {
     List<ManThreadPool> getByClientId(String clientId);
 
     /**
-     * 根据客户端名称获取线程池
+     * 根据客户端名称或客户端服务名称获取线程池
+     * 支持两种格式：
+     * 1. clientName - 纯客户端名称
+     * 2. clientServiceName - 客户端服务名称（格式：clientName:serviceName）
      *
-     * @param clientName 客户端名称
+     * @param clientServiceName 客户端名称或客户端服务名称
      * @return {@link List< ManThreadPool >} 线程池列表
      */
-    List<ManThreadPool> getByClientName(String clientName);
+    List<ManThreadPool> getByClientName(String clientServiceName);
 
     /**
      * 根据客户端ID获取线程池（VO）

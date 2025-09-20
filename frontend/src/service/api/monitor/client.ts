@@ -10,27 +10,27 @@ export function fetchGetClientList() {
   });
 }
 
-/** get thread pool list by client (use clientName) */
-export function fetchGetThreadPoolListByClient(clientName: string, params?: Api.Monitor.ThreadPoolSearchParams) {
+/** get thread pool list by client (use clientServiceName) */
+export function fetchGetThreadPoolListByClient(clientServiceName: string, params?: Api.Monitor.ThreadPoolSearchParams) {
   return request<Api.Monitor.ThreadPoolList>({
-    url: `/thread_pool/client/${clientName}/page`,
+    url: `/thread_pool/client/${clientServiceName}/page`,
     method: 'GET',
     params
   });
 }
 
-/** get thread pool statistics by client (use clientName) */
-export function fetchGetThreadPoolStatisticsByClient(clientName: string) {
+/** get thread pool statistics by client (use clientServiceName) */
+export function fetchGetThreadPoolStatisticsByClient(clientServiceName: string) {
   return request<Api.Monitor.ThreadPoolStatistics>({
-    url: `/thread_pool/client/${clientName}/statistics`,
+    url: `/thread_pool/client/${clientServiceName}/statistics`,
     method: 'GET'
   });
 }
 
-/** get thread pool real-time metrics by client (use clientName) */
-export function fetchGetThreadPoolMetricsByClient(clientName: string) {
+/** get thread pool real-time metrics by client (use clientServiceName) */
+export function fetchGetThreadPoolMetricsByClient(clientServiceName: string) {
   return request<Api.Monitor.ThreadPoolMetrics[]>({
-    url: `/thread_pool/client/${clientName}/metrics`,
+    url: `/thread_pool/client/${clientServiceName}/metrics`,
     method: 'GET'
   });
 }

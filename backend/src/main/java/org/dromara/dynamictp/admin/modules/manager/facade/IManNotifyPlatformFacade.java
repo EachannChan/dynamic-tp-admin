@@ -92,12 +92,15 @@ public interface IManNotifyPlatformFacade {
   List<ManNotifyPlatform> getByClientId(String clientId);
 
   /**
-   * 根据客户端名称获取告警渠道
+   * 根据客户端名称或客户端服务名称获取告警渠道
+   * 支持两种格式：
+   * 1. clientName - 纯客户端名称
+   * 2. clientServiceName - 客户端服务名称（格式：clientName:serviceName）
    *
-   * @param clientName 客户端名称
+   * @param clientServiceName 客户端名称或客户端服务名称
    * @return {@link List<ManNotifyPlatform>} 告警渠道列表
    */
-  List<ManNotifyPlatform> getByClientName(String clientName);
+  List<ManNotifyPlatform> getByClientName(String clientServiceName);
 
   /**
    * 根据客户端ID获取告警渠道（VO）

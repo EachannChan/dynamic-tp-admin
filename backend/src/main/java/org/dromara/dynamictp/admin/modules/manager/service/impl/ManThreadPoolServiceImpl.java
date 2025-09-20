@@ -125,7 +125,7 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
 
             // 获取该客户端的线程池配置
             String clientName = adminServer.getClientServiceName(clientAddress);
-            List<ManThreadPool> configs = getByClientName(clientName);
+            List<ManThreadPool> configs = getByClientServiceName(clientName);
 
             if (configs.isEmpty()) {
                 log.warn("客户端 {} 没有找到线程池配置", clientAddress);
@@ -187,10 +187,10 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
     }
 
     @Override
-    public List<ManThreadPool> getByClientName(String clientName) {
+    public List<ManThreadPool> getByClientServiceName(String clientServiceName) {
         LambdaQueryWrapper<ManThreadPool> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ManThreadPool::getClientName, clientName)
-                .eq(ManThreadPool::getStatus, "ENABLE") // 只获取启用的配置
+        queryWrapper.eq(ManThreadPool::getClientName, clientServiceName)
+                .eq(ManThreadPool::getStatus, "ENABLE")
                 .orderByAsc(ManThreadPool::getCreateTime);
 
         return this.list(queryWrapper);

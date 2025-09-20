@@ -6,14 +6,14 @@ import { fetchCheckClientStatus, fetchGetUnresponsiveClients } from '@/service/a
 import { useClientStore } from '@/store/modules/client';
 import {
   ClientSelector,
+  CoreThreadChart,
+  CurrentThreadChart,
+  MaxThreadChart,
   PerformanceChart,
   QueueUsageChart,
   ResponseTimeChart,
   StatisticsOverview,
-  ThreadPoolTable,
-  CoreThreadChart,
-  MaxThreadChart,
-  CurrentThreadChart
+  ThreadPoolTable
 } from './modules';
 
 defineOptions({
@@ -85,7 +85,7 @@ const MAX_DATA_POINTS = 30; // 最大数据点数量
 function _getOrCreateInternalData(clientName: string): InternalOptimizedData {
   if (!_internalOptimizedData.value[clientName]) {
     _internalOptimizedData.value[clientName] = {
-      timestamps: new Array(MAX_DATA_POINTS).fill(''),
+      timestamps: Array.from({ length: MAX_DATA_POINTS }).fill(''),
       pools: {},
       maxDataPoints: MAX_DATA_POINTS,
       currentIndex: 0,
@@ -120,15 +120,17 @@ function _updateInternalTimeSeriesData() {
   metrics.value.forEach((item: Api.Monitor.ThreadPoolMetrics) => {
     if (!clientData.pools[item.poolName]) {
       // 初始化线程池数据数组
-      clientData.pools[item.poolName] = new Array(MAX_DATA_POINTS).fill(null).map(() => ({
-        corePoolSize: 0,
-        maximumPoolSize: 0,
-        poolSize: 0,
-        activeCount: 0,
-        queueSize: 0,
-        tps: 0,
-        avg: 0
-      }));
+      clientData.pools[item.poolName] = Array.from({ length: MAX_DATA_POINTS })
+        .fill(null)
+        .map(() => ({
+          corePoolSize: 0,
+          maximumPoolSize: 0,
+          poolSize: 0,
+          activeCount: 0,
+          queueSize: 0,
+          tps: 0,
+          avg: 0
+        }));
     }
 
     const poolSnapshots = clientData.pools[item.poolName];
@@ -233,11 +235,10 @@ function loadCachedTimeSeriesData() {
         });
 
         return true;
-      } else {
-        // 缓存过期，清除
-        localStorage.removeItem(CACHE_KEY);
-        console.log('缓存已过期，已清除');
       }
+      // 缓存过期，清除
+      localStorage.removeItem(CACHE_KEY);
+      console.log('缓存已过期，已清除');
     }
   } catch (error) {
     console.error('加载缓存数据失败:', error);
@@ -334,7 +335,10 @@ async function getStatistics() {
       return;
     }
 
-    const { error, data } = await fetchGetThreadPoolStatisticsByClient(clientStore.selectedClientName);
+    const clientServiceName = clientStore.selectedClient?.serviceName
+      ? `${clientStore.selectedClient.clientName}:${clientStore.selectedClient.serviceName}`
+      : clientStore.selectedClient?.clientName;
+    const { error, data } = await fetchGetThreadPoolStatisticsByClient(clientServiceName);
     if (!error && data) {
       statistics.value = data;
     }
@@ -352,7 +356,10 @@ async function getThreadPoolList() {
       return;
     }
 
-    const { error, data } = await fetchGetThreadPoolListByClient(clientStore.selectedClientName, { page: 1, pageSize: 10 });
+    const clientServiceName = clientStore.selectedClient?.serviceName
+      ? `${clientStore.selectedClient.clientName}:${clientStore.selectedClient.serviceName}`
+      : clientStore.selectedClient?.clientName;
+    const { error, data } = await fetchGetThreadPoolListByClient(clientServiceName, { page: 1, pageSize: 10 });
     if (!error && data) {
       threadPools.value = data.records;
     }
@@ -371,7 +378,10 @@ async function getMetrics() {
       return;
     }
 
-    const { error, data } = await fetchGetThreadPoolMetricsByClient(clientStore.selectedClientName);
+    const clientServiceName = clientStore.selectedClient?.serviceName
+      ? `${clientStore.selectedClient.clientName}:${clientStore.selectedClient.serviceName}`
+      : clientStore.selectedClient?.clientName;
+    const { error, data } = await fetchGetThreadPoolMetricsByClient(clientServiceName);
     if (!error && data) {
       metrics.value = data;
       updateTimeSeriesData();

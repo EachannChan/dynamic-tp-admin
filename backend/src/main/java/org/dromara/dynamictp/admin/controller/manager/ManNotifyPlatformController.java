@@ -63,18 +63,19 @@ public class ManNotifyPlatformController {
         .data(iManNotifyPlatformFacade.listManagerNotifyPlatformPage(pageQuery, manNotifyPlatformBO));
   }
 
-  @GetMapping("/by-client/{clientName}/page")
+  @GetMapping("/by-client/{clientServiceName}/page")
   @SaCheckPermission("man:notify_platform:page")
   @Operation(operationId = "1.1", summary = "按客户端分页获取告警渠道列表")
   public Result<IPage<ManNotifyPlatform>> getNotifyPlatformPageByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName,
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName,
       @Parameter(description = "分页参数") PageQuery pageQuery,
       @Parameter(description = "查询条件") ManNotifyPlatformBO manNotifyPlatformBO) {
-    log.info("按客户端分页获取告警渠道列表，参数：clientName={}, pageQuery={}, manNotifyPlatformBO={}", clientName, pageQuery,
+    log.info("按客户端分页获取告警渠道列表，参数：clientServiceName={}, pageQuery={}, manNotifyPlatformBO={}", clientServiceName,
+        pageQuery,
         manNotifyPlatformBO);
 
-    // 验证客户端是否存在且在线（通过 clientName 获取）
-    var client = manClientService.getByClientName(clientName);
+    // 验证客户端是否存在且在线（通过 clientServiceName 获取）
+    var client = manClientService.getByClientName(clientServiceName);
     if (client == null) {
       return Result.failure("客户端不存在");
     }
@@ -86,7 +87,7 @@ public class ManNotifyPlatformController {
     if (manNotifyPlatformBO == null) {
       manNotifyPlatformBO = new ManNotifyPlatformBO();
     }
-    manNotifyPlatformBO.setClientName(client.getClientName());
+    manNotifyPlatformBO.setClientName(client.getServiceName());
 
     return Result
         .data(iManNotifyPlatformFacade.listManagerNotifyPlatformPage(pageQuery, manNotifyPlatformBO));
@@ -138,15 +139,15 @@ public class ManNotifyPlatformController {
     return Result.data(iManNotifyPlatformFacade.getManagerNotifyPlatform(id));
   }
 
-  @PostMapping("/refresh/{clientName}")
+  @PostMapping("/refresh/{clientServiceName}")
   @SaCheckPermission("man:notify_platform:refresh")
   @Operation(operationId = "6", summary = "刷新指定客户端的告警渠道")
   public Result<Boolean> refreshNotifyPlatform(
-      @Parameter(description = "客户端名称") @PathVariable String clientName) {
-    log.info("刷新指定客户端的告警渠道，参数：clientName={}", clientName);
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName) {
+    log.info("刷新指定客户端的告警渠道，参数：clientServiceName={}", clientServiceName);
 
-    // 验证客户端是否存在且在线（通过 clientName 获取）
-    var client = manClientService.getByClientName(clientName);
+    // 验证客户端是否存在且在线（通过 clientServiceName 获取）
+    var client = manClientService.getByClientName(clientServiceName);
     if (client == null) {
       return Result.failure("客户端不存在");
     }
@@ -156,7 +157,7 @@ public class ManNotifyPlatformController {
 
     // 验证AdminServer中是否连接
     Set<String> connectedClients = adminServer.getConnectedClients();
-    if (!connectedClients.contains(client.getClientName())) {
+    if (!connectedClients.contains(client.getServiceName())) {
       return Result.failure("客户端未连接到AdminServer");
     }
 
@@ -171,20 +172,20 @@ public class ManNotifyPlatformController {
     return Result.status(iManNotifyPlatformFacade.refreshAllNotifyPlatforms());
   }
 
-  @GetMapping("/by-client/{clientName}")
+  @GetMapping("/by-client/{clientServiceName}")
   @SaCheckPermission("man:notify_platform:list")
   @Operation(operationId = "8", summary = "获取指定客户端的告警渠道")
   public Result<List<ManNotifyPlatform>> getByClient(
-      @Parameter(description = "客户端名称") @PathVariable String clientName) {
-    log.info("获取指定客户端的告警渠道，参数：clientName={}", clientName);
+      @Parameter(description = "客户端服务名称") @PathVariable String clientServiceName) {
+    log.info("获取指定客户端的告警渠道，参数：clientServiceName={}", clientServiceName);
 
-    // 验证客户端是否存在（通过 clientName 获取）
-    var client = manClientService.getByClientName(clientName);
+    // 验证客户端是否存在（通过 clientServiceName 获取）
+    var client = manClientService.getByClientName(clientServiceName);
     if (client == null) {
       return Result.failure("客户端不存在");
     }
 
-    return Result.data(iManNotifyPlatformFacade.getByClientName(clientName));
+    return Result.data(iManNotifyPlatformFacade.getByClientName(clientServiceName));
   }
 
   @GetMapping("/clients")

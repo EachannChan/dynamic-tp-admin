@@ -27,21 +27,14 @@ public class ServerDisconnectProcessor implements ConnectionEventProcessor {
         log.info("DynamicTp admin server disconnected, remoteAddress: {}", remoteAddress);
 
         // 从属性中查找对应的clientName
-        String clientName = null;
-        Map<String, String> clientAttributes = adminServerUserProcessor.getAttributes().get(remoteAddress);
+        String clientServiceName = null;
+        Map<String, String> clientAttributes = AdminServerUserProcessor.getATTRIBUTES().get(remoteAddress);
         if (clientAttributes != null) {
-            clientName = clientAttributes.get("clientName");
+            clientServiceName = clientAttributes.get("clientName") + ":" + clientAttributes.get("serviceName");
         }
 
-        // 如果没有找到clientName，则使用remoteAddress作为备选
-        if (clientName == null || clientName.trim().isEmpty()) {
-            clientName = remoteAddress;
-        }
+        serverConnectProcessor.removeClientConnection(clientServiceName);
 
-        serverConnectProcessor.removeClientConnection(clientName);
-
-        if (adminServerUserProcessor.getAttributes().containsKey(remoteAddress)) {
-            adminServerUserProcessor.getAttributes().remove(remoteAddress);
-        }
+        AdminServerUserProcessor.getATTRIBUTES().remove(remoteAddress);
     }
 }

@@ -226,7 +226,10 @@ async function loadData() {
       pageSize: pagination.value.pageSize
     };
 
-    const { error, data: responseData } = await fetchGetNotifyPlatformPageByClient(selectedClientName.value, params);
+    const clientServiceName = selectedClient.value?.serviceName
+      ? `${selectedClient.value.clientName}:${selectedClient.value.serviceName}`
+      : selectedClient.value?.clientName;
+    const { error, data: responseData } = await fetchGetNotifyPlatformPageByClient(clientServiceName, params);
 
     if (!error && responseData) {
       data.value = responseData.records || [];
@@ -275,7 +278,10 @@ async function syncClient() {
   }
 
   try {
-    const { error } = await fetchRefreshNotifyPlatform(selectedClientName.value);
+    const clientServiceName = selectedClient.value?.serviceName
+      ? `${selectedClient.value.clientName}:${selectedClient.value.serviceName}`
+      : selectedClient.value?.clientName;
+    const { error } = await fetchRefreshNotifyPlatform(clientServiceName);
     if (!error) {
       message.success('同步客户端成功');
       loadData();

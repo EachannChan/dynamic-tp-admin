@@ -11,10 +11,10 @@ export function fetchGetThreadPoolPage(params?: Api.Manage.ThreadPoolSearchParam
   });
 }
 
-/** 按客户端分页获取线程池列表（clientName） */
-export function fetchGetThreadPoolPageByClient(clientName: string, params?: Api.Manage.ThreadPoolSearchParams) {
+/** 按客户端分页获取线程池列表（clientServiceName） */
+export function fetchGetThreadPoolPageByClient(clientServiceName: string, params?: Api.Manage.ThreadPoolSearchParams) {
   return request<Api.Manage.ThreadPoolList>({
-    url: `/man_thread_pool/by-client/${clientName}/page`,
+    url: `/man_thread_pool/by-client/${clientServiceName}/page`,
     method: 'GET',
     params
   });
@@ -62,18 +62,18 @@ export function fetchGetConnectedClients() {
   });
 }
 
-/** 获取指定客户端的线程池（clientName） */
-export function fetchGetThreadPoolByClient(clientName: string) {
+/** 获取指定客户端的线程池（clientServiceName） */
+export function fetchGetThreadPoolByClient(clientServiceName: string) {
   return request<Api.Manage.ThreadPool[]>({
-    url: `/man_thread_pool/by-client/${clientName}`,
+    url: `/man_thread_pool/by-client/${clientServiceName}`,
     method: 'GET'
   });
 }
 
-/** 刷新指定客户端的线程池（clientName） */
-export function fetchRefreshThreadPool(clientName: string) {
+/** 刷新指定客户端的线程池（clientServiceName） */
+export function fetchRefreshThreadPool(clientServiceName: string) {
   return request<boolean>({
-    url: `/man_thread_pool/refresh/${clientName}`,
+    url: `/man_thread_pool/refresh/${clientServiceName}`,
     method: 'POST'
   });
 }

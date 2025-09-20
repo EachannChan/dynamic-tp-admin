@@ -84,6 +84,7 @@ public class MonClientController {
       // 构建客户端信息 - 基于真实连接状态
       client.put("clientId", clientAddress);
       client.put("clientName", clientName);
+      client.put("serviceName", serviceName);
       client.put("clientIp", clientIp);
       client.put("clientPort", clientPort);
       // 客户端在connectedClients中表示真实在线状态
@@ -107,6 +108,7 @@ public class MonClientController {
 
         client.put("clientId", dbClient.getClientId());
         client.put("clientName", dbClient.getClientName());
+        client.put("serviceName", dbClient.getServiceName());
         client.put("clientIp", dbClient.getClientIp());
         client.put("clientPort", dbClient.getClientPort());
         client.put("status", "offline");
@@ -188,8 +190,6 @@ public class MonClientController {
       String clientIp = parts.length > 0 ? parts[0] : "unknown";
       int clientPort = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
 
-      saveConnectedClient(clientAddress, clientName, serviceName, clientIp, clientPort);
-
       Map<String, Object> instance = new HashMap<>();
       instance.put("clientId", clientAddress);
       instance.put("clientIp", clientIp);
@@ -217,7 +217,7 @@ public class MonClientController {
         instance.put("clientId", dbClient.getClientId());
         instance.put("clientIp", dbClient.getClientIp());
         instance.put("clientPort", dbClient.getClientPort());
-        instance.put("status", Boolean.parseBoolean(dbClient.getStatus()) ? "online": "offline");
+        instance.put("status", Boolean.parseBoolean(dbClient.getStatus()) ? "online" : "offline");
         instance.put("lastHeartbeat", dbClient.getLastHeartbeatTime() != null
             ? dbClient.getLastHeartbeatTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
             : LocalDateTime.now().minusHours(2).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
@@ -248,13 +248,14 @@ public class MonClientController {
     return Result.data(services);
   }
 
-  private void saveConnectedClient(String clientAddress, String clientName, String serviceName, String clientIp, int clientPort) {
+  private void saveConnectedClient(String clientAddress, String clientName, String serviceName, String clientIp,
+      int clientPort) {
     try {
       String clientId = clientAddress;
       String serverIp = String.valueOf(InetAddress.getLocalHost());
 
       boolean result = iManClientFacade.handleClientConnection(
-              clientId, clientName, serviceName, clientIp, clientPort, serverIp, serverPort);
+          clientId, clientName, serviceName, clientIp, clientPort, serverIp, serverPort);
 
       if (result) {
         log.info("客户端数据添加或更新成功: {}", clientId);
@@ -280,7 +281,7 @@ public class MonClientController {
       String clientServiceName = adminServer.getClientServiceName(clientAddress);
       String extractClientName = extractClientName(clientServiceName);
       if (!clientName.equals(extractClientName)) {
-          continue;
+        continue;
       }
 
       // 解析客户端地址

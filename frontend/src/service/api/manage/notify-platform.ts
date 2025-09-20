@@ -11,10 +11,10 @@ export function fetchGetNotifyPlatformPage(params?: Api.Manage.NotifyPlatformSea
   });
 }
 
-/** 按客户端分页获取告警渠道列表（clientName） */
-export function fetchGetNotifyPlatformPageByClient(clientName: string, params?: Api.Manage.NotifyPlatformSearchParams) {
+/** 按客户端分页获取告警渠道列表（clientServiceName） */
+export function fetchGetNotifyPlatformPageByClient(clientServiceName: string, params?: Api.Manage.NotifyPlatformSearchParams) {
   return request<Api.Manage.NotifyPlatformList>({
-    url: `/man_notify_platform/by-client/${clientName}/page`,
+    url: `/man_notify_platform/by-client/${clientServiceName}/page`,
     method: 'GET',
     params
   });
@@ -54,18 +54,18 @@ export function fetchGetNotifyPlatformDetail(id: number) {
   });
 }
 
-/** 获取指定客户端的告警渠道（clientName） */
-export function fetchGetNotifyPlatformByClient(clientName: string) {
+/** 获取指定客户端的告警渠道（clientServiceName） */
+export function fetchGetNotifyPlatformByClient(clientServiceName: string) {
   return request<Api.Manage.NotifyPlatform[]>({
-    url: `/man_notify_platform/by-client/${clientName}`,
+    url: `/man_notify_platform/by-client/${clientServiceName}`,
     method: 'GET'
   });
 }
 
-/** 刷新指定客户端的告警渠道（clientName） */
-export function fetchRefreshNotifyPlatform(clientName: string) {
+/** 刷新指定客户端的告警渠道（clientServiceName） */
+export function fetchRefreshNotifyPlatform(clientServiceName: string) {
   return request<boolean>({
-    url: `/man_notify_platform/refresh/${clientName}`,
+    url: `/man_notify_platform/refresh/${clientServiceName}`,
     method: 'POST'
   });
 }

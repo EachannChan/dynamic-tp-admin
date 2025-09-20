@@ -86,9 +86,9 @@ public class ManThreadPoolFacadeImpl implements IManThreadPoolFacade {
   }
 
   @Override
-  public List<ManThreadPool> getByClientName(String clientName) {
-    log.info("根据客户端名称获取线程池，参数：clientName={}", clientName);
-    return managerThreadPoolService.getByClientName(clientName);
+  public List<ManThreadPool> getByClientName(String clientServiceName) {
+    log.info("根据客户端名称获取线程池，参数：clientServiceName={}", clientServiceName);
+    return managerThreadPoolService.getByClientServiceName(clientServiceName);
   }
 
   @Override

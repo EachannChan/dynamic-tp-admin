@@ -18,20 +18,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author cyc
+ */
 @Slf4j
 @Component
 public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody> {
 
     @Getter
-    private Map<String, Map<String, String>> attributes = new ConcurrentHashMap<>();
+    private final static Map<String, Map<String, String>> ATTRIBUTES = new ConcurrentHashMap<>();
 
     @Autowired(required = false)
     private PropertiesHandler propertiesHandler;
 
     private final ExecutorService executor;
-
-    @Autowired
-    private ServerConnectProcessor serverConnectProcessor;
 
     /**
      * 线程池名称计数器
@@ -56,14 +56,21 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     @Override
     public Object handleRequest(BizContext bizContext, AdminRequestBody adminRequestBody) {
         String remoteAddress = bizContext.getRemoteAddress();
-        Map<String, String> clientAttributes = attributes.computeIfAbsent(remoteAddress,
+        Map<String, String> clientAttributes = ATTRIBUTES.computeIfAbsent(remoteAddress,
                 k -> new ConcurrentHashMap<>());
-        Map<String,String> attributes = adminRequestBody.getAttributes();
-        clientAttributes.putAll(attributes);
+        Map<String,String> reqAttributes = adminRequestBody.getAttributes();
+        clientAttributes.putAll(reqAttributes);
 
-        String clientName = attributes.get("clientName");
-        String serviceName = attributes.get("serviceName");
-        serverConnectProcessor.addClientConnection(clientName+":"+serviceName, bizContext.getConnection());
+        String clientName = reqAttributes.get("clientName");
+        String serviceName = reqAttributes.get("serviceName");
+        String clientServiceName = clientName + ":" + serviceName;
+        String err = ServerConnectProcessor.addClientConnection(clientServiceName, bizContext.getConnection());
+        if (err != null) {
+            // 移除记录并断开新连接，然后抛出异常给客户端
+            ATTRIBUTES.remove(remoteAddress);
+            log.error("重复 clientServiceName, 已断开: {}", err);
+            return new IllegalStateException(err);
+        }
 
         return doHandleRequest(bizContext, adminRequestBody);
     }

@@ -194,7 +194,7 @@ public class AdminServer {
     }
 
     public String getAttribute(String clientAddress, String key) {
-        Map<String, String> map = adminServerUserProcessor.getAttributes()
+        Map<String, String> map = adminServerUserProcessor.getATTRIBUTES()
                 .get(clientAddress);
         if (map == null) {
             return null;
@@ -206,21 +206,21 @@ public class AdminServer {
      * 根据客户端名称获取客户端地址
      * 使用在属性通道上传的 clientName 与连接地址映射关系
      *
-     * @param clientName 客户端名称
+     * @param clientServiceName 客户端名称
      * @return 匹配到的客户端远程地址，未找到返回 null
      */
-    public String getClientAddressByName(String clientName) {
-        if (clientName == null || clientName.isBlank()) {
+    public String getClientAddressByName(String clientServiceName) {
+        if (clientServiceName == null || clientServiceName.isBlank()) {
             return null;
         }
-        Map<String, Map<String, String>> allAttributes = adminServerUserProcessor.getAttributes();
+        Map<String, Map<String, String>> allAttributes = adminServerUserProcessor.getATTRIBUTES();
         for (Map.Entry<String, Map<String, String>> entry : allAttributes.entrySet()) {
             Map<String, String> attr = entry.getValue();
             if (attr == null) {
                 continue;
             }
-            String name = attr.get("clientName");
-            if (clientName.equals(name)) {
+            String name = attr.get("clientName") + ":" + attr.get("serviceName");
+            if (clientServiceName.equals(name)) {
                 return entry.getKey();
             }
         }
