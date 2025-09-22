@@ -21,7 +21,7 @@ import java.util.Map;
  * 实现线程池配置的刷新逻辑
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.service.impl.PropertiesHandlerImpl
  * @CreateTime 2025/01/30 - 10:00
  */

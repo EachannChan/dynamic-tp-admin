@@ -2,7 +2,7 @@
 <configuration status="WARN">
 
     <!-- 日志路径 -->
-    <property name="LOG_HOME" value="panis-boot-logs"/>
+    <property name="LOG_HOME" value="dynamic-tp-logs"/>
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
     <!-- appender是configuration的子节点，是负责写日志的组件。 -->
     <!-- ConsoleAppender：把日志输出到控制台 -->
@@ -42,7 +42,7 @@
         作为任何用途，RollingFileAppender必须同时设置RollingPolicy和TriggeringPolicy,但是，如果其RollingPolicy也实现了TriggeringPolicy接口，则只需要显式指定前者。-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 日志文件的名字会根据fileNamePattern的值，每隔一段时间改变一次 -->
-            <!-- 文件名：panis-boot-logs/panis-boot-admin_info.2017-12-05.0.log -->
+            <!-- 文件名：dynamic-tp-logs/dynamic-tp-admin_info.2017-12-05.0.log -->
             <!-- 注意：SizeAndTimeBasedRollingPolicy中 ％i和％d令牌都是强制性的，必须存在，要不会报错 -->
             <fileNamePattern>${LOG_HOME}/${APP_NAME}_info.%d.%i.log.gz</fileNamePattern>
             <!-- 每产生一个日志文件，该日志文件的保存期限为30天, ps:maxHistory的单位是根据fileNamePattern中的翻转策略自动推算出来的,例如上面选用了yyyy-MM-dd,则单位为天
@@ -82,7 +82,7 @@
         作为任何用途，RollingFileAppender必须同时设置RollingPolicy和TriggeringPolicy,但是，如果其RollingPolicy也实现了TriggeringPolicy接口，则只需要显式指定前者。-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次 -->
-            <!-- 文件名：panis-boot-logs/panis_error.2017-12-05.0.log -->
+            <!-- 文件名：dynamic-tp-logs/panis_error.2017-12-05.0.log -->
             <!-- 注意：SizeAndTimeBasedRollingPolicy中 ％i和％d令牌都是强制性的，必须存在，要不会报错 -->
             <fileNamePattern>${LOG_HOME}/${APP_NAME}_error.%d.%i.log.gz</fileNamePattern>
             <!-- 每产生一个日志文件，该日志文件的保存期限为30天, ps:maxHistory的单位是根据fileNamePattern中的翻转策略自动推算出来的,例如上面选用了yyyy-MM-dd,则单位为天

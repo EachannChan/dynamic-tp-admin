@@ -18,7 +18,7 @@ import java.util.List;
  * 线程池管理 门面接口实现层
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.facade.impl.ManThreadPoolFacadeImpl
  * @CreateTime 2025/01/30 - 10:00
  */

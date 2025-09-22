@@ -17,7 +17,7 @@ import java.util.List;
  * 告警渠道管理 门面实现层
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.facade.impl.ManNotifyPlatformFacadeImpl
  * @CreateTime 2025/01/30 - 10:00
  */

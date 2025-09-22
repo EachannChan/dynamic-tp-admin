@@ -8,7 +8,7 @@ import org.dromara.dynamictp.admin.modules.manager.domain.entity.ManNotifyItem;
  * 线程池通知配置 Mapper 接口层
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.repository.mapper.ManNotifyItemMapper
  * @CreateTime 2025/01/30 - 10:00
  */

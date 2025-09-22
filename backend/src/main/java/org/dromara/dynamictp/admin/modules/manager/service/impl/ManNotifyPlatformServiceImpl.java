@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * 告警渠道管理 Service 服务实现层
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.service.impl.ManNotifyPlatformServiceImpl
  * @CreateTime 2025/01/30 - 10:00
  */

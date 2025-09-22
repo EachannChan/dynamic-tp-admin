@@ -7,7 +7,7 @@ spring:
     # 激活环境
     active: @env@
   application:
-    name: panis-boot-admin
+    name: dynamic-tp-admin
   main:
     allow-circular-references: true
     allow-bean-definition-overriding: true

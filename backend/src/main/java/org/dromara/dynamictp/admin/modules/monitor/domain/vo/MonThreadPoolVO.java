@@ -8,7 +8,7 @@ import org.dromara.dynamictp.common.entity.ThreadPoolStats;
  * 线程池监控 VO 对象，完全基于 ThreadPoolStats
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.monitor.domain.vo.MonThreadPoolVO
  * @CreateTime 2025/07/29 - 10:00
  */

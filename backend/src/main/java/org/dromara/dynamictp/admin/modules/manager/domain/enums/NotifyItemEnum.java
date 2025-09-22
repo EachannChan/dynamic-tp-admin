@@ -7,7 +7,7 @@ import lombok.Getter;
  * 通知类型枚举
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.enums.NotifyItemEnum
  * @CreateTime 2025/01/30 - 10:00
  */

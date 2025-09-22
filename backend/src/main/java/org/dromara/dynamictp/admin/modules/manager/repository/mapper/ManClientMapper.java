@@ -8,7 +8,7 @@ import org.dromara.dynamictp.admin.modules.manager.domain.entity.ManClient;
  * 客户端管理 Mapper 接口
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.repository.mapper.ManClientMapper
  * @CreateTime 2025/01/30 - 10:00
  */

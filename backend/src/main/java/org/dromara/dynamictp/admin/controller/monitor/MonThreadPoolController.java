@@ -28,7 +28,7 @@ import java.util.List;
  * 线程池监控
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.admin.controller.monitor.MonThreadPoolController
  * @CreateTime 2025/07/29 - 10:00
  */

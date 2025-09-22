@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * 客户端管理 BO 对象
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.bo.ManClientBO
  */
 @Data

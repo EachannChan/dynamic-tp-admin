@@ -13,7 +13,7 @@ import java.io.Serial;
  * 线程池管理 Entity 实体类
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.entity.ManThreadPool
  * @CreateTime 2025/01/30 - 10:00
  */

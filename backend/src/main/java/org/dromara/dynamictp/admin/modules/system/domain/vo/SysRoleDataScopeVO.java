@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
 * 角色数据权限关联管理 VO 展示类
 *
 * @Author payne.zhuang <paynezhuang@gmail.com>
-* @ProjectName panis-boot
+* @ProjectName dynamic-tp-admin
 * @ClassName org.dromara.dynamictp.admin.modules.system.domain.vo.SysRoleDataScopeVO
 * @CreateTime 2025-05-10 - 21:40:18
 */

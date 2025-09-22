@@ -7,7 +7,7 @@ import lombok.Data;
  * 线程池监控 BO 对象
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.monitor.domain.bo.MonThreadPoolBO
  */
 @Data

@@ -13,7 +13,7 @@ import java.io.Serial;
  * 告警渠道管理 Entity 实体类
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.entity.ManNotifyPlatform
  * @CreateTime 2025/01/30 - 10:00
  */

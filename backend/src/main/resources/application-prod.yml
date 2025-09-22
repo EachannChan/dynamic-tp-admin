@@ -42,7 +42,7 @@ logging:
     org.dromara.dynamictp: INFO
     org.springframework.web: WARN
   file:
-    name: logs/panis-boot-admin.log
+    name: logs/dynamic-tp-admin.log
   logback:
     rollingpolicy:
       max-file-size: 100MB

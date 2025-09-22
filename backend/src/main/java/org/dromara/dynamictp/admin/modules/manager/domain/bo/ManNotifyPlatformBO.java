@@ -7,7 +7,7 @@ import lombok.Data;
  * 告警渠道管理 BO 对象
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.bo.ManNotifyPlatformBO
  */
 @Data

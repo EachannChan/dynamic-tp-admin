@@ -10,7 +10,7 @@ import java.util.List;
  * 线程池通知配置 VO 对象
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.domain.vo.ManNotifyItemVO
  * @CreateTime 2025/01/30 - 10:00
  */

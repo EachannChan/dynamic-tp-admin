@@ -21,7 +21,7 @@ import java.util.Set;
  * 线程池监控 Service 服务实现层 - 支持多客户端 (Dynamic-TP AdminClient)
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.monitor.service.impl.MonThreadPoolServiceImpl
  * @CreateTime 2025/07/29 - 10:00
  */

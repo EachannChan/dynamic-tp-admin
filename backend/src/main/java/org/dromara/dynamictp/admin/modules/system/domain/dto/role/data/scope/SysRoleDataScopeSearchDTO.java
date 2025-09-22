@@ -30,7 +30,7 @@ import java.io.Serializable;
 * 角色数据权限关联管理 查询 DTO 对象
 *
 * @Author payne.zhuang <paynezhuang@gmail.com>
-* @ProjectName panis-boot
+* @ProjectName dynamic-tp-admin
 * @ClassName org.dromara.dynamictp.admin.modules.system.domain.dto.role.data.scope.SysRoleDataScopeSearchDTO
 * @CreateTime 2025-05-10 - 21:40:18
 */

@@ -31,7 +31,7 @@ import java.util.List;
 * 角色数据权限关联管理 编辑更新 DTO 对象
 *
 * @Author payne.zhuang <paynezhuang@gmail.com>
-* @ProjectName panis-boot
+* @ProjectName dynamic-tp-admin
 * @ClassName org.dromara.dynamictp.admin.modules.system.domain.dto.role.data.scope.SysRoleDataScopeUpdateDTO
 * @CreateTime 2025-05-10 - 21:40:18
 */

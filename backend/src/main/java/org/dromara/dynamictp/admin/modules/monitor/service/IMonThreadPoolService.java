@@ -11,7 +11,7 @@ import java.util.List;
  * 线程池监控 Service 服务接口层
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.monitor.service.IMonThreadPoolService
  * @CreateTime 2024/12/19 - 10:00
  */

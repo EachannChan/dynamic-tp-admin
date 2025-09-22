@@ -7,7 +7,7 @@ import java.util.Map;
  * 用于处理线程池配置的刷新逻辑
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.infrastructure.server.handler.PropertiesHandler
  * @CreateTime 2025/01/30 - 10:00
  */

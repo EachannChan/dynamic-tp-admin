@@ -30,7 +30,7 @@ import java.util.Set;
  * 线程池管理 Service 服务实现层
  *
  * @Author eachann
- * @ProjectName panis-boot
+ * @ProjectName dynamic-tp-admin
  * @ClassName org.dromara.dynamictp.admin.modules.manager.service.impl.ManThreadPoolServiceImpl
  * @CreateTime 2025/01/30 - 10:00
  */
