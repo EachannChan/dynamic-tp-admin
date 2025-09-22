@@ -207,13 +207,7 @@ public class ManNotifyPlatformServiceImpl extends ServiceImpl<ManNotifyPlatformM
   public List<ManNotifyPlatform> getByClientName(String clientServiceName) {
     LambdaQueryWrapper<ManNotifyPlatform> queryWrapper = new LambdaQueryWrapper<>();
 
-    // 从clientServiceName中提取纯clientName（去掉serviceName部分）
-    String clientName = clientServiceName;
-    if (clientServiceName != null && clientServiceName.contains(":")) {
-      clientName = clientServiceName.split(":")[0];
-    }
-
-    queryWrapper.eq(ManNotifyPlatform::getClientName, clientName);
+    queryWrapper.eq(ManNotifyPlatform::getClientName, clientServiceName);
     queryWrapper.orderByDesc(ManNotifyPlatform::getCreateTime);
     return this.list(queryWrapper);
   }
