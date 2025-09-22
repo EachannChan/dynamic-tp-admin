@@ -28,7 +28,6 @@ import java.util.List;
  * 客户端管理
  *
  * @Author eachann
- * @ProjectName panis-boot
  * @ClassName org.dromara.dynamictp.admin.admin.controller.manager.ManClientController
  * @CreateTime 2025/01/30 - 10:00
  */

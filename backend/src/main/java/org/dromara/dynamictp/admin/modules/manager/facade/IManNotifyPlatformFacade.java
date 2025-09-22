@@ -71,10 +71,10 @@ public interface IManNotifyPlatformFacade {
   /**
    * 刷新告警渠道到指定客户端
    *
-   * @param clientId 客户端ID
+   * @param clientServiceName 客户端服务名称
    * @return {@link Boolean} 结果
    */
-  Boolean refreshNotifyPlatform(String clientId);
+  Boolean refreshNotifyPlatform(String clientServiceName);
 
   /**
    * 刷新所有客户端的告警渠道
@@ -89,7 +89,7 @@ public interface IManNotifyPlatformFacade {
    * @param clientId 客户端ID
    * @return {@link List<ManNotifyPlatform>} 告警渠道列表
    */
-  List<ManNotifyPlatform> getByClientId(String clientId);
+  List<ManNotifyPlatform> getByClientServiceName(String clientId);
 
   /**
    * 根据客户端名称或客户端服务名称获取告警渠道
@@ -108,5 +108,5 @@ public interface IManNotifyPlatformFacade {
    * @param clientId 客户端ID
    * @return {@link List<ManNotifyPlatformVO>} 告警渠道列表
    */
-  List<ManNotifyPlatformVO> getByClientIdVO(String clientId);
+  List<ManNotifyPlatformVO> getByClientServiceVO(String clientId);
 }

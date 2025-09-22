@@ -60,8 +60,8 @@ public class ManNotifyPlatformFacadeImpl implements IManNotifyPlatformFacade {
   }
 
   @Override
-  public Boolean refreshNotifyPlatform(String clientId) {
-    return manNotifyPlatformService.refreshNotifyPlatform(clientId);
+  public Boolean refreshNotifyPlatform(String clientServiceName) {
+    return manNotifyPlatformService.refreshNotifyPlatform(clientServiceName);
   }
 
   @Override
@@ -70,8 +70,8 @@ public class ManNotifyPlatformFacadeImpl implements IManNotifyPlatformFacade {
   }
 
   @Override
-  public List<ManNotifyPlatform> getByClientId(String clientId) {
-    return manNotifyPlatformService.getByClientId(clientId);
+  public List<ManNotifyPlatform> getByClientServiceName(String clientServiceName) {
+    return manNotifyPlatformService.getByClientServiceName(clientServiceName);
   }
 
   @Override
@@ -80,7 +80,7 @@ public class ManNotifyPlatformFacadeImpl implements IManNotifyPlatformFacade {
   }
 
   @Override
-  public List<ManNotifyPlatformVO> getByClientIdVO(String clientId) {
-    return manNotifyPlatformService.getByClientIdVO(clientId);
+  public List<ManNotifyPlatformVO> getByClientServiceVO(String clientServiceName) {
+    return manNotifyPlatformService.getByClientServiceVO(clientServiceName);
   }
 }

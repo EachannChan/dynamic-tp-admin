@@ -40,7 +40,7 @@ const selectOptions = computed(() => {
     label: serviceName,
     key: serviceName,
     children: (clients as any[]).map(c => ({
-      label: `${c.clientIp}:${c.clientPort}${c.status === 'online' ? '' : ' (离线)'}`,
+      label: `${c.applicationName}${c.status === 'online' ? '' : ' (离线)'}`,
       value: c.clientId,
       disabled: c.status !== 'online'
     }))
@@ -107,11 +107,6 @@ onMounted(() => {
           clearable
           @update:value="val => handleClientChange(val as string)"
         />
-        <NButton quaternary circle @click="refreshClientList" :loading="loading">
-          <template #icon>
-            <SvgIcon icon="mdi:refresh" />
-          </template>
-        </NButton>
       </div>
 
       <div v-if="!loading && selectOptions.length === 0" class="py-8">

@@ -336,7 +336,7 @@ public class ManClientServiceImpl extends ServiceImpl<ManClientMapper, ManClient
       } else {
         log.info("客户端已存在，更新: clientId={}, clientName={}", clientId, clientName);
         LambdaUpdateWrapper<ManClient> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(ManClient::getClientId, clientId)
+        updateWrapper.eq(ManClient::getServiceName, formattedServiceName)
             .set(ManClient::getClientName, clientName)
             .set(ManClient::getServiceName, formattedServiceName)
             .set(ManClient::getClientIp, clientIp)

@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
  * 线程池管理
  *
  * @Author eachann
- * @ProjectName panis-boot
  * @ClassName org.dromara.dynamictp.admin.admin.controller.manager.ManThreadPoolController
  * @CreateTime 2025/01/30 - 10:00
  */

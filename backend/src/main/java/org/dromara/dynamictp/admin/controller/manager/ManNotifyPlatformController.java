@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
  * 告警渠道管理
  *
  * @Author eachann
- * @ProjectName panis-boot
  * @ClassName org.dromara.dynamictp.admin.admin.controller.manager.ManNotifyPlatformController
  * @CreateTime 2025/01/30 - 10:00
  */
@@ -161,7 +160,7 @@ public class ManNotifyPlatformController {
       return Result.failure("客户端未连接到AdminServer");
     }
 
-    return Result.status(iManNotifyPlatformFacade.refreshNotifyPlatform(client.getClientId()));
+    return Result.status(iManNotifyPlatformFacade.refreshNotifyPlatform(clientServiceName));
   }
 
   @PostMapping("/refresh/all")
