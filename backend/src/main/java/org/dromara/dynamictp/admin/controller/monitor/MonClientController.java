@@ -81,10 +81,13 @@ public class MonClientController {
 
       String clientName = adminServer.getAttribute(clientAddress, "clientName");
       String serviceName = adminServer.getAttribute(clientAddress, "serviceName");
+      String clientServiceName = adminServer.getClientServiceName(clientAddress);
+
       // 构建客户端信息 - 基于真实连接状态
       client.put("clientId", clientAddress);
       client.put("clientName", clientName);
       client.put("serviceName", serviceName);
+      client.put("clientServiceName", clientServiceName); // 添加完整的客户端服务名称
       client.put("clientIp", clientIp);
       client.put("clientPort", clientPort);
       // 客户端在connectedClients中表示真实在线状态
@@ -109,6 +112,7 @@ public class MonClientController {
         client.put("clientId", dbClient.getClientId());
         client.put("clientName", dbClient.getClientName());
         client.put("serviceName", dbClient.getServiceName());
+        client.put("clientServiceName", dbClient.getServiceName()); // 添加完整的客户端服务名称
         client.put("clientIp", dbClient.getClientIp());
         client.put("clientPort", dbClient.getClientPort());
         client.put("status", "offline");
@@ -192,6 +196,7 @@ public class MonClientController {
 
       Map<String, Object> instance = new HashMap<>();
       instance.put("clientId", clientAddress);
+      instance.put("clientServiceName", adminServer.getClientServiceName(clientAddress)); // 添加完整的客户端服务名称
       instance.put("clientIp", clientIp);
       instance.put("clientPort", clientPort);
       instance.put("status", "online");
@@ -216,6 +221,7 @@ public class MonClientController {
       if (!connectedClientServiceNames.contains(dbClientServiceName)) {
         Map<String, Object> instance = new HashMap<>();
         instance.put("clientId", dbClient.getClientId());
+        instance.put("clientServiceName", dbClient.getServiceName()); // 添加完整的客户端服务名称
         instance.put("clientIp", dbClient.getClientIp());
         instance.put("clientPort", dbClient.getClientPort());
         instance.put("status", Boolean.parseBoolean(dbClient.getStatus()) ? "online" : "offline");
@@ -294,6 +300,7 @@ public class MonClientController {
 
       Map<String, Object> instance = new HashMap<>();
       instance.put("clientId", clientAddress);
+      instance.put("clientServiceName", clientServiceName); // 添加完整的客户端服务名称
       instance.put("clientIp", clientIp);
       instance.put("clientPort", clientPort);
       instance.put("status", "online");
@@ -317,6 +324,7 @@ public class MonClientController {
       if (clientName.equals(dbClientName) && !connectedClientNames.contains(dbServiceName)) {
         Map<String, Object> instance = new HashMap<>();
         instance.put("clientId", dbClient.getClientId());
+        instance.put("clientServiceName", dbClient.getServiceName()); // 添加完整的客户端服务名称
         instance.put("clientIp", dbClient.getClientIp());
         instance.put("clientPort", dbClient.getClientPort());
         instance.put("status", "offline");

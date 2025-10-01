@@ -33,7 +33,7 @@ const statistics = ref<Api.Monitor.ThreadPoolStatistics>();
 const threadPools = ref<Api.Monitor.ThreadPool[]>([]);
 // 实时指标数据
 const metrics = ref<Api.Monitor.ThreadPoolMetrics[]>([]);
-// 时间序列数据 - 为每个客户端存储独立的历史数据
+// 时间序列数据 - 为每个客户端实例（按clientId）存储独立的历史数据
 const timeSeriesData = ref<
   Record<
     string,
@@ -82,9 +82,9 @@ const CACHE_EXPIRE_TIME = 24 * 60 * 60 * 1000; // 24小时过期时间
 const MAX_DATA_POINTS = 30; // 最大数据点数量
 
 // 初始化或获取内部优化数据结构
-function _getOrCreateInternalData(clientName: string): InternalOptimizedData {
-  if (!_internalOptimizedData.value[clientName]) {
-    _internalOptimizedData.value[clientName] = {
+function _getOrCreateInternalData(clientId: string): InternalOptimizedData {
+  if (!_internalOptimizedData.value[clientId]) {
+    _internalOptimizedData.value[clientId] = {
       timestamps: Array.from({ length: MAX_DATA_POINTS }).fill(''),
       pools: {},
       maxDataPoints: MAX_DATA_POINTS,
@@ -92,7 +92,7 @@ function _getOrCreateInternalData(clientName: string): InternalOptimizedData {
       isFull: false
     };
   }
-  return _internalOptimizedData.value[clientName];
+  return _internalOptimizedData.value[clientId];
 }
 
 // 内部优化的数据更新函数（环形缓冲区）
@@ -107,10 +107,10 @@ function _updateInternalTimeSeriesData() {
     second: '2-digit'
   });
 
-  const clientName = clientStore.selectedClientName;
-  if (!clientName) return;
+  const clientId = clientStore.selectedClientId;
+  if (!clientId) return;
 
-  const clientData = _getOrCreateInternalData(clientName);
+  const clientData = _getOrCreateInternalData(clientId);
   const currentIndex = clientData.currentIndex;
 
   // 更新时间戳（覆盖写入，O(1)操作）
@@ -155,8 +155,8 @@ function _updateInternalTimeSeriesData() {
 }
 
 // 将优化后的数据转换为兼容格式
-function _convertInternalToCompatible(clientName: string) {
-  const optimizedData = _internalOptimizedData.value[clientName];
+function _convertInternalToCompatible(clientId: string) {
+  const optimizedData = _internalOptimizedData.value[clientId];
   if (!optimizedData) return;
 
   const compatibleData: {
@@ -216,7 +216,7 @@ function _convertInternalToCompatible(clientName: string) {
     }
   }
 
-  timeSeriesData.value[clientName] = compatibleData;
+  timeSeriesData.value[clientId] = compatibleData;
 }
 
 // 加载缓存的时间序列数据
@@ -230,8 +230,8 @@ function loadCachedTimeSeriesData() {
         _internalOptimizedData.value = data;
         console.log('从缓存恢复时间序列数据:', Object.keys(data));
 
-        Object.keys(data).forEach((clientName) => {
-          _convertInternalToCompatible(clientName);
+        Object.keys(data).forEach((clientId) => {
+          _convertInternalToCompatible(clientId);
         });
 
         return true;
@@ -335,9 +335,7 @@ async function getStatistics() {
       return;
     }
 
-    const clientServiceName = clientStore.selectedClient?.serviceName
-      ? `${clientStore.selectedClient.clientName}:${clientStore.selectedClient.serviceName}`
-      : clientStore.selectedClient?.clientName;
+    const clientServiceName = clientStore.selectedClient?.clientServiceName || clientStore.selectedClient?.clientName;
     const { error, data } = await fetchGetThreadPoolStatisticsByClient(clientServiceName);
     if (!error && data) {
       statistics.value = data;
@@ -356,9 +354,7 @@ async function getThreadPoolList() {
       return;
     }
 
-    const clientServiceName = clientStore.selectedClient?.serviceName
-      ? `${clientStore.selectedClient.clientName}:${clientStore.selectedClient.serviceName}`
-      : clientStore.selectedClient?.clientName;
+    const clientServiceName = clientStore.selectedClient?.clientServiceName || clientStore.selectedClient?.clientName;
     const { error, data } = await fetchGetThreadPoolListByClient(clientServiceName, { page: 1, pageSize: 10 });
     if (!error && data) {
       threadPools.value = data.records;
@@ -378,9 +374,7 @@ async function getMetrics() {
       return;
     }
 
-    const clientServiceName = clientStore.selectedClient?.serviceName
-      ? `${clientStore.selectedClient.clientName}:${clientStore.selectedClient.serviceName}`
-      : clientStore.selectedClient?.clientName;
+    const clientServiceName = clientStore.selectedClient?.clientServiceName || clientStore.selectedClient?.clientName;
     const { error, data } = await fetchGetThreadPoolMetricsByClient(clientServiceName);
     if (!error && data) {
       metrics.value = data;
@@ -396,8 +390,8 @@ function updateTimeSeriesData() {
   _updateInternalTimeSeriesData();
 
   // 转换为兼容格式供图表组件使用
-  if (clientStore.selectedClientName) {
-    _convertInternalToCompatible(clientStore.selectedClientName);
+  if (clientStore.selectedClientId) {
+    _convertInternalToCompatible(clientStore.selectedClientId);
   }
 
   // 保存到本地缓存
@@ -537,7 +531,7 @@ onMounted(async () => {
   await autoSelectFirstAvailableClient();
 
   // 如果有缓存数据，直接使用；否则启动定时器获取新数据
-  if (hasCachedData && clientStore.selectedClientName) {
+  if (hasCachedData && clientStore.selectedClientId) {
     // 使用缓存数据，但启动定时器继续更新
     startTimer();
   } else {
@@ -571,22 +565,22 @@ onUnmounted(() => {
 
     <!-- 核心线程数变化趋势 -->
     <CoreThreadChart :metrics="metrics"
-                     :time-series-data="timeSeriesData[clientStore.selectedClientName] || { timestamps: [], poolData: {} }" />
+                     :time-series-data="timeSeriesData[clientStore.selectedClientId] || { timestamps: [], poolData: {} }" />
 
     <!-- 最大线程数变化趋势 -->
     <MaxThreadChart :metrics="metrics"
-                    :time-series-data="timeSeriesData[clientStore.selectedClientName] || { timestamps: [], poolData: {} }" />
+                    :time-series-data="timeSeriesData[clientStore.selectedClientId] || { timestamps: [], poolData: {} }" />
 
     <!-- 当前线程数变化趋势 -->
     <CurrentThreadChart :metrics="metrics"
-                        :time-series-data="timeSeriesData[clientStore.selectedClientName] || { timestamps: [], poolData: {} }" />
+                        :time-series-data="timeSeriesData[clientStore.selectedClientId] || { timestamps: [], poolData: {} }" />
 
     <!-- 队列使用情况 -->
     <QueueUsageChart :metrics="metrics" />
 
     <!-- 性能指标趋势 -->
     <PerformanceChart :metrics="metrics"
-                      :time-series-data="timeSeriesData[clientStore.selectedClientName] || { timestamps: [], poolData: {} }" />
+                      :time-series-data="timeSeriesData[clientStore.selectedClientId] || { timestamps: [], poolData: {} }" />
 
     <!-- 响应时间百分位分布 -->
     <ResponseTimeChart :metrics="metrics" />

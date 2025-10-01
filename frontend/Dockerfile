@@ -29,10 +29,6 @@ FROM nginx:1.27-alpine
 # 安装必要的工具
 RUN apk add --no-cache curl
 
-# 创建非root用户
-RUN addgroup -g 1001 -S nginx && \
-  adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx
-
 # 复制静态资源与Nginx配置
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf

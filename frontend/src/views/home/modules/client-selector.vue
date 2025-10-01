@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useClientStore } from '@/store/modules/client';
-import SvgIcon from '@/components/custom/svg-icon.vue';
 
 interface Props {
   modelValue?: string; // clientId (IP:PORT)
@@ -39,7 +38,7 @@ const selectOptions = computed(() => {
     type: 'group',
     label: serviceName,
     key: serviceName,
-    children: (clients as any[]).map(c => ({
+    children: (clients as any[]).map((c) => ({
       label: `${c.applicationName}${c.status === 'online' ? '' : ' (离线)'}`,
       value: c.clientId,
       disabled: c.status !== 'online'
@@ -60,7 +59,8 @@ async function refreshClientList() {
   }
 }
 
-function handleClientChange(clientId: string) {
+function handleClientChange(clientId: string | null) {
+  if (!clientId) return;
   const client = clientStore.clients.find((c: any) => c.clientId === clientId);
   if (client && client.status === 'online') {
     selectedClient.value = clientId;
@@ -87,36 +87,33 @@ onMounted(() => {
 </script>
 
 <template>
-  <NCard title="客户端选择" :bordered="false" class="mb-4">
+  <NCard title="客户端选择"
+         :bordered="false"
+         class="mb-4">
     <template #header-extra>
       <div class="flex items-center space-x-2">
-        <NButton size="small" :loading="loading" @click="refreshClientList">刷新</NButton>
+        <NButton size="small"
+                 :loading="loading"
+                 @click="refreshClientList">刷新</NButton>
       </div>
     </template>
 
     <div class="space-y-4">
       <div class="flex items-center space-x-3">
-        <NSelect
-          v-model:value="selectedClient"
-          :options="selectOptions"
-            placeholder="选择客户端实例"
-          class="w-full max-w-xl"
-          :loading="loading"
-          :disabled="loading || selectOptions.length === 0"
-          filterable
-          clearable
-          @update:value="val => handleClientChange(val as string)"
-        />
-      </div>
-
-      <div v-if="!loading && selectOptions.length === 0" class="py-8">
-        <NEmpty description="暂无客户端" />
+        <NSelect v-model:value="selectedClient"
+                 :options="selectOptions"
+                 placeholder="选择客户端实例"
+                 class="max-w-xl w-full"
+                 :loading="loading"
+                 :disabled="loading || selectOptions.length === 0"
+                 filterable
+                 clearable
+                 @update:value="val => handleClientChange(val)" />
       </div>
 
       <!-- 选中客户端状态提示 -->
-      <div v-else-if="selectedClient" class="text-xs text-gray-500">
-        当前选择: {{ selectedClient }}
-      </div>
+      <div v-if="selectedClient"
+           class="text-xs text-gray-500">当前选择: {{ selectedClient }}</div>
     </div>
   </NCard>
 </template>

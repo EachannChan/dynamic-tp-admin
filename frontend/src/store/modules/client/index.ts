@@ -3,6 +3,8 @@ import { ref } from 'vue';
 import { fetchGetClientList } from '@/service/api';
 
 export const useClientStore = defineStore('client', () => {
+  // 当前选中的客户端ID（唯一标识）
+  const selectedClientId = ref<string>('');
   // 当前选中的客户端名称
   const selectedClientName = ref<string>('');
   // 当前选中的客户端信息
@@ -58,15 +60,17 @@ export const useClientStore = defineStore('client', () => {
     return result;
   }
 
-  // 设置选中的客户端（使用 clientName 作为主键）
+  // 设置选中的客户端（使用 clientId 作为唯一标识）
   function setSelectedClient(clientName: string, client?: any) {
     selectedClientName.value = clientName;
+    selectedClientId.value = client?.clientId || '';
     selectedClient.value = client;
   }
 
   // 清除选中的客户端
   function clearSelectedClient() {
     selectedClientName.value = '';
+    selectedClientId.value = '';
     selectedClient.value = null;
   }
 
@@ -77,6 +81,7 @@ export const useClientStore = defineStore('client', () => {
   }
 
   return {
+    selectedClientId,
     selectedClientName,
     selectedClient,
     clients,

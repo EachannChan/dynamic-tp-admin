@@ -12,7 +12,6 @@ RUN mvn dependency:go-offline -B
 
 # 复制源码
 COPY backend/src ./backend/src
-COPY backend/pom.xml ./backend/
 
 # 构建应用
 RUN mvn clean package -f backend/pom.xml -DskipTests
