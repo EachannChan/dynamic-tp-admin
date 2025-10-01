@@ -218,7 +218,6 @@ public class ManNotifyPlatformServiceImpl extends ServiceImpl<ManNotifyPlatformM
     return BeanUtil.copyToList(list, ManNotifyPlatformVO.class);
   }
 
-
   /**
    * 构建告警平台配置属性 Map
    * 格式: dynamictp.platforms[0].platformId 等

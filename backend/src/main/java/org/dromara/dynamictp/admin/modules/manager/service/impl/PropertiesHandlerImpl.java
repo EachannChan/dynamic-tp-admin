@@ -113,8 +113,7 @@ public class PropertiesHandlerImpl implements PropertiesHandler {
           ManNotifyItem notifyItem = notifyItems.get(j);
           String notifyPrefix = executorPrefix + "notifyItems[" + j + "].";
 
-          properties.put(notifyPrefix + "type", notifyItem.getType());
-          properties.put(notifyPrefix + "enabled", notifyItem.getEnabled());
+          properties.put(notifyPrefix + "type", notifyItem.getType().toLowerCase());
           properties.put(notifyPrefix + "threshold", notifyItem.getThreshold());
           properties.put(notifyPrefix + "count", notifyItem.getCount());
           properties.put(notifyPrefix + "period", notifyItem.getPeriod());

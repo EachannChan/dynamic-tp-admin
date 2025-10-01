@@ -13,6 +13,7 @@ import org.dromara.dynamictp.admin.infrastructure.page.PageQuery;
 import org.dromara.dynamictp.admin.infrastructure.server.AdminServer;
 import org.dromara.dynamictp.admin.modules.manager.domain.bo.ManThreadPoolBO;
 import org.dromara.dynamictp.admin.modules.manager.domain.entity.ManThreadPool;
+import org.dromara.dynamictp.admin.modules.manager.domain.vo.ManThreadPoolVO;
 import org.dromara.dynamictp.admin.modules.manager.facade.IManThreadPoolFacade;
 import org.dromara.dynamictp.admin.modules.manager.service.IManClientService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -130,10 +131,10 @@ public class ManThreadPoolController {
   @GetMapping("/{id}")
   @SaCheckPermission("man:thread_pool:detail")
   @Operation(operationId = "5", summary = "获取线程池详情")
-  public Result<ManThreadPool> getThreadPoolDetail(
+  public Result<ManThreadPoolVO> getThreadPoolDetail(
       @Parameter(description = "主键ID") @PathVariable Long id) {
     log.info("获取线程池详情，参数：id={}", id);
-    return Result.data(iManThreadPoolFacade.getManagerThreadPool(id));
+    return Result.data(iManThreadPoolFacade.getManagerThreadPoolVO(id));
   }
 
   @PostMapping("/refresh/{clientServiceName}")
@@ -158,7 +159,8 @@ public class ManThreadPoolController {
       return Result.failure("客户端未连接到AdminServer");
     }
 
-    return Result.status(iManThreadPoolFacade.refreshThreadPool(adminServer.getClientAddressByName(client.getServiceName())));
+    return Result
+        .status(iManThreadPoolFacade.refreshThreadPool(adminServer.getClientAddressByName(client.getServiceName())));
   }
 
   @PostMapping("/refresh/all")

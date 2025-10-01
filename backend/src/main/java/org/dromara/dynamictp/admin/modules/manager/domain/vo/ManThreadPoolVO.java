@@ -22,10 +22,10 @@ public class ManThreadPoolVO {
   private Long id;
 
   @Schema(description = "线程池名称")
-  private String poolName;
+  private String threadPoolName;
 
   @Schema(description = "线程池别名")
-  private String poolAliasName;
+  private String threadPoolAliasName;
 
   @Schema(description = "核心线程数")
   private Integer corePoolSize;
@@ -54,13 +54,31 @@ public class ManThreadPoolVO {
   @Schema(description = "线程名称前缀")
   private String threadNamePrefix;
 
+  @Schema(description = "执行超时时间（毫秒）")
+  private Long runTimeout;
+
+  @Schema(description = "队列超时时间（毫秒）")
+  private Long queueTimeout;
+
+  @Schema(description = "任务包装器名称列表，逗号分隔")
+  private String taskWrapperNames;
+
+  @Schema(description = "关闭时是否等待任务完成")
+  private Boolean waitForTasksToCompleteOnShutdown;
+
+  @Schema(description = "等待终止的秒数")
+  private Long awaitTerminationSeconds;
+
+  @Schema(description = "是否预启动所有核心线程")
+  private Boolean preStartAllCoreThreads;
+
   @Schema(description = "客户端ID")
   private String clientId;
 
   @Schema(description = "客户端名称")
   private String clientName;
 
-  @Schema(description = "配置状态（0:禁用,1:启用）")
+  @Schema(description = "配置状态（ENABLE:启用,DISABLE:禁用）")
   private String status;
 
   @Schema(description = "备注")

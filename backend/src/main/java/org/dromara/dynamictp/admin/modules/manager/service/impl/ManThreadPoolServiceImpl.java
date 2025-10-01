@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.dynamictp.admin.infrastructure.page.PageQuery;
 import org.dromara.dynamictp.admin.infrastructure.server.AdminServer;
+import org.dromara.dynamictp.admin.modules.manager.domain.bo.ManNotifyItemBO;
 import org.dromara.dynamictp.admin.modules.manager.domain.bo.ManThreadPoolBO;
 import org.dromara.dynamictp.admin.modules.manager.domain.entity.ManNotifyItem;
 import org.dromara.dynamictp.admin.modules.manager.domain.entity.ManNotifyPlatform;
@@ -20,11 +22,13 @@ import org.dromara.dynamictp.admin.modules.manager.service.IManThreadPoolService
 import org.dromara.dynamictp.common.em.AdminRequestTypeEnum;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 线程池管理 Service 服务实现层
@@ -74,27 +78,71 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean addManagerThreadPool(ManThreadPoolBO managerThreadPoolBO) {
+        // 1. 保存线程池基本信息
         ManThreadPool config = new ManThreadPool();
         BeanUtils.copyProperties(managerThreadPoolBO, config);
-        return this.save(config);
+        boolean saved = this.save(config);
+
+        if (!saved) {
+            log.error("保存线程池配置失败");
+            return false;
+        }
+
+        // 2. 保存通知配置
+        if (managerThreadPoolBO.getNotifyItems() != null && !managerThreadPoolBO.getNotifyItems().isEmpty()) {
+            saveNotifyItems(config.getId(), managerThreadPoolBO.getNotifyItems(),
+                    managerThreadPoolBO.getClientId(), managerThreadPoolBO.getClientName());
+        }
+
+        return true;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean updateManagerThreadPool(ManThreadPoolBO managerThreadPoolBO) {
         if (managerThreadPoolBO.getId() == null) {
             log.error("更新线程池配置失败：ID不能为空");
             return false;
         }
 
+        // 1. 更新线程池基本信息
         ManThreadPool config = new ManThreadPool();
         BeanUtils.copyProperties(managerThreadPoolBO, config);
         log.info("更新线程池配置，ID: {}, 线程池名称: {}", config.getId(), config.getThreadPoolName());
-        return this.updateById(config);
+        boolean updated = this.updateById(config);
+
+        if (!updated) {
+            log.error("更新线程池配置失败");
+            return false;
+        }
+
+        // 2. 删除旧的通知配置
+        LambdaQueryWrapper<ManNotifyItem> deleteWrapper = new LambdaQueryWrapper<>();
+        deleteWrapper.eq(ManNotifyItem::getThreadPoolId, managerThreadPoolBO.getId());
+        manNotifyItemMapper.delete(deleteWrapper);
+
+        // 3. 保存新的通知配置
+        if (managerThreadPoolBO.getNotifyItems() != null && !managerThreadPoolBO.getNotifyItems().isEmpty()) {
+            saveNotifyItems(managerThreadPoolBO.getId(), managerThreadPoolBO.getNotifyItems(),
+                    managerThreadPoolBO.getClientId(), managerThreadPoolBO.getClientName());
+        }
+
+        return true;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteManagerThreadPool(List<Long> ids) {
+        // 1. 删除关联的通知配置
+        for (Long id : ids) {
+            LambdaQueryWrapper<ManNotifyItem> deleteWrapper = new LambdaQueryWrapper<>();
+            deleteWrapper.eq(ManNotifyItem::getThreadPoolId, id);
+            manNotifyItemMapper.delete(deleteWrapper);
+        }
+
+        // 2. 删除线程池配置
         return this.removeByIds(ids);
     }
 
@@ -111,7 +159,106 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
         }
         ManThreadPoolVO vo = new ManThreadPoolVO();
         BeanUtils.copyProperties(config, vo);
+
+        // 加载通知配置
+        vo.setNotifyItems(getNotifyItemsByThreadPoolId(id));
+
         return vo;
+    }
+
+    /**
+     * 根据线程池ID获取通知配置列表
+     * 
+     * @param threadPoolId 线程池ID
+     * @return 通知配置VO列表
+     */
+    private List<org.dromara.dynamictp.admin.modules.manager.domain.vo.ManNotifyItemVO> getNotifyItemsByThreadPoolId(
+            Long threadPoolId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        LambdaQueryWrapper<ManNotifyItem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ManNotifyItem::getThreadPoolId, threadPoolId);
+
+        List<ManNotifyItem> notifyItems = manNotifyItemMapper.selectList(queryWrapper);
+
+        return notifyItems.stream().map(item -> {
+            org.dromara.dynamictp.admin.modules.manager.domain.vo.ManNotifyItemVO vo = new org.dromara.dynamictp.admin.modules.manager.domain.vo.ManNotifyItemVO();
+            vo.setId(item.getId());
+            vo.setThreadPoolId(item.getThreadPoolId());
+            vo.setType(item.getType());
+            vo.setEnabled(item.getEnabled());
+            vo.setThreshold(item.getThreshold());
+            vo.setCount(item.getCount());
+            vo.setPeriod(item.getPeriod());
+            vo.setSilencePeriod(item.getSilencePeriod());
+            vo.setClusterLimit(item.getClusterLimit());
+            vo.setReceivers(item.getReceivers());
+            vo.setClientId(item.getClientId());
+            vo.setClientName(item.getClientName());
+            vo.setStatus(item.getStatus());
+            vo.setRemark(item.getRemark());
+            vo.setCreateTime(item.getCreateTime());
+            vo.setUpdateTime(item.getUpdateTime());
+            vo.setCreateUser(item.getCreateUserId());
+
+            // 解析platformIds JSON字符串为List
+            try {
+                if (item.getPlatformIds() != null && !item.getPlatformIds().isEmpty()) {
+                    List<String> platformIds = objectMapper.readValue(item.getPlatformIds(),
+                            objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+                    vo.setPlatformIds(platformIds);
+                }
+            } catch (Exception e) {
+                log.warn("解析通知配置平台ID列表失败：{}", e.getMessage());
+            }
+
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 保存通知配置列表
+     * 
+     * @param threadPoolId  线程池ID
+     * @param notifyItemBOs 通知配置BO列表
+     * @param clientId      客户端ID
+     * @param clientName    客户端名称
+     */
+    private void saveNotifyItems(Long threadPoolId, List<ManNotifyItemBO> notifyItemBOs,
+            String clientId, String clientName) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (ManNotifyItemBO notifyItemBO : notifyItemBOs) {
+            try {
+                ManNotifyItem notifyItem = new ManNotifyItem();
+                notifyItem.setThreadPoolId(threadPoolId);
+                notifyItem.setType(notifyItemBO.getType());
+                notifyItem.setEnabled(notifyItemBO.getEnabled() != null ? notifyItemBO.getEnabled() : true);
+                notifyItem.setThreshold(notifyItemBO.getThreshold() != null ? notifyItemBO.getThreshold() : 70);
+                notifyItem.setCount(notifyItemBO.getCount() != null ? notifyItemBO.getCount() : 1);
+                notifyItem.setPeriod(notifyItemBO.getPeriod() != null ? notifyItemBO.getPeriod() : 120);
+                notifyItem.setSilencePeriod(
+                        notifyItemBO.getSilencePeriod() != null ? notifyItemBO.getSilencePeriod() : 120);
+                notifyItem.setClusterLimit(notifyItemBO.getClusterLimit() != null ? notifyItemBO.getClusterLimit() : 1);
+                notifyItem.setReceivers(notifyItemBO.getReceivers() != null ? notifyItemBO.getReceivers() : "all");
+                notifyItem.setClientId(clientId);
+                notifyItem.setClientName(clientName);
+                notifyItem.setStatus(notifyItemBO.getStatus() != null ? notifyItemBO.getStatus() : "ENABLE");
+                notifyItem.setRemark(notifyItemBO.getRemark());
+
+                // 处理platformIds列表，转换为JSON字符串存储
+                if (notifyItemBO.getPlatformIds() != null && !notifyItemBO.getPlatformIds().isEmpty()) {
+                    String platformIdsJson = objectMapper.writeValueAsString(notifyItemBO.getPlatformIds());
+                    notifyItem.setPlatformIds(platformIdsJson);
+                } else {
+                    notifyItem.setPlatformIds("[]");
+                }
+
+                manNotifyItemMapper.insert(notifyItem);
+            } catch (Exception e) {
+                log.error("保存通知配置失败：{}", e.getMessage(), e);
+            }
+        }
     }
 
     @Override
@@ -160,8 +307,7 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
 
             for (String clientAddress : connectedClientAddresses) {
                 try {
-                    Boolean result = refreshThreadPool(clientAddress);
-                    if (!result) {
+                    if (!refreshThreadPool(clientAddress)) {
                         allSuccess = false;
                     }
                 } catch (Exception e) {
@@ -272,8 +418,9 @@ public class ManThreadPoolServiceImpl extends ServiceImpl<ManThreadPoolMapper, M
                     ManNotifyItem notifyItem = notifyItems.get(j);
                     String notifyPrefix = executorPrefix + "notifyItems[" + j + "].";
 
-                    properties.put(notifyPrefix + "type", notifyItem.getType());
-                    properties.put(notifyPrefix + "enabled", notifyItem.getEnabled());
+                    // 将type转换为小写下划线格式（枚举名转换为value）
+                    String notifyType = notifyItem.getType();
+                    properties.put(notifyPrefix + "type", notifyType.toLowerCase());
                     properties.put(notifyPrefix + "threshold", notifyItem.getThreshold());
                     properties.put(notifyPrefix + "count", notifyItem.getCount());
                     properties.put(notifyPrefix + "period", notifyItem.getPeriod());

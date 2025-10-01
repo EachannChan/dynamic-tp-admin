@@ -158,7 +158,13 @@ const handleNotifyToggle = (item: NotifyItem) => {
 
 // 处理通知配置变更
 const handleNotifyChange = () => {
-  emit('change', notifyItems.value);
+  // 创建新数组以确保响应式更新（深拷贝）
+  const newItems = notifyItems.value.map((item) => ({ ...item }));
+  console.log('NotifyConfig 数据变更:', newItems);
+
+  // 必须同时触发 update:modelValue 和 change 事件
+  emit('update:modelValue', newItems);
+  emit('change', newItems);
 };
 
 // 监听展开状态

@@ -3,6 +3,8 @@ package org.dromara.dynamictp.admin.modules.manager.domain.bo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 线程池管理 BO 对象
  *
@@ -79,4 +81,7 @@ public class ManThreadPoolBO {
 
   @Schema(description = "备注")
   private String remark;
+
+  @Schema(description = "通知配置列表")
+  private List<ManNotifyItemBO> notifyItems;
 }

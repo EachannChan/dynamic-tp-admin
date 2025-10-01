@@ -5,7 +5,12 @@ import { useRouter } from 'vue-router';
 import {
   NButton,
   NCard,
+  NCollapse,
+  NCollapseItem,
   NDataTable,
+  NDescriptions,
+  NDescriptionsItem,
+  NDivider,
   NForm,
   NFormItem,
   NInput,
@@ -14,25 +19,23 @@ import {
   NSelect,
   NSpace,
   NSwitch,
-  NTabs,
   NTabPane,
-  NDescriptions,
-  NDescriptionsItem,
+  NTabs,
   useDialog,
   useMessage
 } from 'naive-ui';
 import {
   fetchAddThreadPool,
   fetchDeleteThreadPool,
+  fetchGetThreadPoolDetail,
   fetchGetThreadPoolPageByClient,
   fetchRefreshThreadPool,
   fetchUpdateThreadPool
 } from '@/service/api/manage/thread-pool';
 import { fetchGetNotifyPlatformByClient } from '@/service/api/manage/notify-platform';
 import { useClientStore } from '@/store/modules/client';
-import { ClientSelector } from '../home/modules';
-import NotifyConfig from './components/NotifyConfig.vue';
 import { formatDateTime } from '@/utils/date';
+import { ClientSelector } from '../home/modules';
 
 defineOptions({
   name: 'ThreadPoolPage'
@@ -421,10 +424,14 @@ function handleAdd() {
     awaitTerminationSeconds: 0,
     preStartAllCoreThreads: false,
     clientId: selectedClient?.value?.clientId,
+    clientServiceName: selectedClientName.value+':'+selectedClient?.value?.serviceName,
     status: 'ENABLE',
     remark: '',
     notifyItems: []
   };
+
+  // 初始化默认通知配置
+  initDefaultNotifyItems();
 
   showModal.value = true;
 }
@@ -437,15 +444,46 @@ function handleViewDetail(row: any) {
 }
 
 // 编辑线程池
-function handleEdit(row: any) {
+async function handleEdit(row: any) {
   isEdit.value = true;
   modalTitle.value = '编辑线程池';
 
-  // 使用行数据填充表单
-  formModel.value = {
-    ...row,
-    notifyItems: row.notifyItems || []
-  };
+  try {
+    // 调用详情接口获取完整数据（包括通知配置）
+    const { error, data } = await fetchGetThreadPoolDetail(row.id);
+
+    if (!error && data) {
+      // 使用详情数据填充表单，确保包含通知配置
+      formModel.value = {
+        ...data,
+        clientId: data.clientId || row.clientId,
+        notifyItems: data.notifyItems && data.notifyItems.length > 0 ? data.notifyItems : []
+      };
+    } else {
+      // 如果获取详情失败，使用行数据
+      message.warning('获取详情失败，使用基本信息');
+      formModel.value = {
+        ...row,
+        notifyItems: row.notifyItems || []
+      };
+    }
+
+    // 如果没有通知配置，初始化默认配置
+    if (!formModel.value.notifyItems || formModel.value.notifyItems.length === 0) {
+      initDefaultNotifyItems();
+    }
+  } catch (error) {
+    console.error('获取线程池详情失败:', error);
+    // 降级处理：使用行数据
+    formModel.value = {
+      ...row,
+      notifyItems: row.notifyItems || []
+    };
+    // 初始化默认配置
+    if (!formModel.value.notifyItems || formModel.value.notifyItems.length === 0) {
+      initDefaultNotifyItems();
+    }
+  }
 
   showModal.value = true;
 }
@@ -503,6 +541,7 @@ async function handleSubmit() {
         awaitTerminationSeconds: formModel.value.awaitTerminationSeconds,
         preStartAllCoreThreads: formModel.value.preStartAllCoreThreads,
         clientId: formModel.value.clientId,
+        clientServiceName: selectedClientName.value+':'+selectedClient?.value?.serviceName,
         status: formModel.value.status,
         remark: formModel.value.remark,
         notifyItems: formModel.value.notifyItems
@@ -536,7 +575,7 @@ async function handleSubmit() {
         awaitTerminationSeconds: formModel.value.awaitTerminationSeconds,
         preStartAllCoreThreads: formModel.value.preStartAllCoreThreads,
         clientId: formModel.value.clientId,
-        clientName: selectedClientName.value,
+        clientName: selectedClientName.value+':'+selectedClient.value?.serviceName,
         status: formModel.value.status,
         remark: formModel.value.remark,
         notifyItems: formModel.value.notifyItems
@@ -562,10 +601,99 @@ function handleCancel() {
   showModal.value = false;
 }
 
-// 处理通知配置变更
-function handleNotifyChange() {
-  // 通知配置变更时的处理逻辑
-  console.log('通知配置已更新:', formModel.value.notifyItems);
+// 通知类型配置
+const notifyTypeConfig: Record<string, { title: string; description: string }> = {
+  CHANGE: { title: '线程池变更', description: '线程池配置发生变更时通知' },
+  LIVENESS: { title: '线程池活跃度', description: '线程池活跃度低于阈值时通知' },
+  CAPACITY: { title: '线程池容量', description: '线程池容量使用率超过阈值时通知' },
+  REJECT: { title: '任务拒绝', description: '任务被拒绝时通知' },
+  RUN_TIMEOUT: { title: '执行超时', description: '任务执行超时时通知' },
+  QUEUE_TIMEOUT: { title: '队列超时', description: '任务在队列中等待超时时通知' }
+};
+
+// 初始化默认通知配置
+function initDefaultNotifyItems() {
+  if (formModel.value.notifyItems.length === 0) {
+    formModel.value.notifyItems = [
+      {
+        type: 'CHANGE',
+        enabled: true,
+        threshold: 1,
+        count: 1,
+        period: 120,
+        silencePeriod: 1,
+        clusterLimit: 1,
+        receivers: '',
+        platformIds: [],
+        status: 'ENABLE'
+      },
+      {
+        type: 'LIVENESS',
+        enabled: true,
+        threshold: 70,
+        count: 1,
+        period: 120,
+        silencePeriod: 120,
+        clusterLimit: 1,
+        receivers: '',
+        platformIds: [],
+        status: 'ENABLE'
+      },
+      {
+        type: 'CAPACITY',
+        enabled: true,
+        threshold: 70,
+        count: 1,
+        period: 120,
+        silencePeriod: 120,
+        clusterLimit: 1,
+        receivers: '',
+        platformIds: [],
+        status: 'ENABLE'
+      },
+      {
+        type: 'REJECT',
+        enabled: true,
+        threshold: 1,
+        count: 1,
+        period: 120,
+        silencePeriod: 120,
+        clusterLimit: 1,
+        receivers: '',
+        platformIds: [],
+        status: 'ENABLE'
+      },
+      {
+        type: 'RUN_TIMEOUT',
+        enabled: true,
+        threshold: 10,
+        count: 10,
+        period: 120,
+        silencePeriod: 120,
+        clusterLimit: 1,
+        receivers: '',
+        platformIds: [],
+        status: 'ENABLE'
+      },
+      {
+        type: 'QUEUE_TIMEOUT',
+        enabled: true,
+        threshold: 10,
+        count: 10,
+        period: 120,
+        silencePeriod: 120,
+        clusterLimit: 1,
+        receivers: '',
+        platformIds: [],
+        status: 'ENABLE'
+      }
+    ];
+  }
+}
+
+// 获取通知类型标题
+function getNotifyTypeTitle(type: string) {
+  return notifyTypeConfig[type]?.title || type;
 }
 
 // 监听分页变化
@@ -784,9 +912,94 @@ onMounted(async () => {
         </NFormItem>
 
         <!-- 通知配置 -->
-        <NotifyConfig v-model="formModel.notifyItems"
-                      :platforms="platformOptions"
-                      @change="handleNotifyChange" />
+        <NDivider title-placement="left">通知配置</NDivider>
+
+        <div class="notify-config-section">
+          <NCollapse>
+            <NCollapseItem v-for="(item, index) in formModel.notifyItems"
+                           :key="item.type"
+                           :name="item.type"
+                           :title="getNotifyTypeTitle(item.type)">
+              <template #header>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+                  <span>{{ getNotifyTypeTitle(item.type) }}</span>
+                  <NSwitch v-model:value="item.enabled"
+                           size="small"
+                           @click.stop />
+                </div>
+              </template>
+
+              <div v-if="item.enabled">
+                <NRow :gutter="16">
+                  <NCol :span="12">
+                    <NFormItem label="检测阈值">
+                      <NInputNumber v-model:value="item.threshold"
+                                    :min="1"
+                                    :max="100"
+                                    placeholder="请输入检测阈值"
+                                    style="width: 100%" />
+                    </NFormItem>
+                  </NCol>
+                  <NCol :span="12">
+                    <NFormItem label="触发次数">
+                      <NInputNumber v-model:value="item.count"
+                                    :min="1"
+                                    :max="100"
+                                    placeholder="请输入触发次数"
+                                    style="width: 100%" />
+                    </NFormItem>
+                  </NCol>
+                </NRow>
+
+                <NRow :gutter="16">
+                  <NCol :span="12">
+                    <NFormItem label="检测周期(秒)">
+                      <NInputNumber v-model:value="item.period"
+                                    :min="30"
+                                    :max="3600"
+                                    placeholder="请输入检测周期"
+                                    style="width: 100%" />
+                    </NFormItem>
+                  </NCol>
+                  <NCol :span="12">
+                    <NFormItem label="静默期(秒)">
+                      <NInputNumber v-model:value="item.silencePeriod"
+                                    :min="30"
+                                    :max="3600"
+                                    placeholder="请输入静默期"
+                                    style="width: 100%" />
+                    </NFormItem>
+                  </NCol>
+                </NRow>
+
+                <NRow :gutter="16">
+                  <NCol :span="12">
+                    <NFormItem label="集群限制">
+                      <NInputNumber v-model:value="item.clusterLimit"
+                                    :min="1"
+                                    :max="10"
+                                    placeholder="请输入集群限制"
+                                    style="width: 100%" />
+                    </NFormItem>
+                  </NCol>
+                  <NCol :span="12">
+                    <NFormItem label="接收者">
+                      <NInput v-model:value="item.receivers"
+                              placeholder="多个接收者用逗号分隔" />
+                    </NFormItem>
+                  </NCol>
+                </NRow>
+
+                <NFormItem label="通知平台">
+                  <NSelect v-model:value="item.platformIds"
+                           multiple
+                           :options="platformOptions"
+                           placeholder="请选择通知平台" />
+                </NFormItem>
+              </div>
+            </NCollapseItem>
+          </NCollapse>
+        </div>
       </NForm>
 
       <template #footer>
@@ -890,5 +1103,18 @@ onMounted(async () => {
 
 .action-bar {
   margin-bottom: 16px;
+}
+
+.notify-config-section {
+  margin-top: 16px;
+}
+
+.notify-config-section :deep(.n-collapse-item__header) {
+  padding: 12px 16px;
+}
+
+.notify-config-section :deep(.n-collapse-item__content-wrapper) {
+  padding: 16px;
+  background-color: #f9fafb;
 }
 </style>
