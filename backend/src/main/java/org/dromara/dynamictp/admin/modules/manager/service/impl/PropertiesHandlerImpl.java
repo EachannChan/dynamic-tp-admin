@@ -39,8 +39,8 @@ public class PropertiesHandlerImpl implements PropertiesHandler {
   private ManNotifyPlatformMapper manNotifyPlatformMapper;
 
   @Override
-  public Map<Object, Object> convertConfigsToMap(String clientAddress) {
-    List<ManThreadPool> configs = getByClientAddress(clientAddress);
+  public Map<Object, Object> convertConfigsToMap(String clientServiceName) {
+    List<ManThreadPool> configs = getByClientAddress(clientServiceName);
     Map<Object, Object> properties = new HashMap<>();
 
     // 遍历每个线程池配置，使用数组索引格式
@@ -77,16 +77,14 @@ public class PropertiesHandlerImpl implements PropertiesHandler {
   /**
    * 根据客户端地址获取线程池配置
    * 
-   * @param clientAddress 客户端地址
+   * @param clientServiceName 客户端服务名
    * @return 线程池配置列表
    */
-  private List<ManThreadPool> getByClientAddress(String clientAddress) {
-    // 这里需要根据客户端地址获取客户端名称，然后查询配置
-    // 由于没有AdminServer的依赖，我们直接查询所有启用的配置
+  private List<ManThreadPool> getByClientAddress(String clientServiceName) {
     LambdaQueryWrapper<ManThreadPool> queryWrapper = new LambdaQueryWrapper<>();
     queryWrapper.eq(ManThreadPool::getStatus, "ENABLE")
+            .eq(ManThreadPool::getClientName, clientServiceName)
         .orderByAsc(ManThreadPool::getCreateTime);
-
     return manThreadPoolMapper.selectList(queryWrapper);
   }
 

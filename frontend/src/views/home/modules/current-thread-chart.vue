@@ -28,7 +28,15 @@ const { domRef: currentThreadChartRef, setOptions: setCurrentThreadOptions } = u
 
 // 更新图表
 function updateChart() {
-  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) return;
+  // 如果没有数据，清空图表
+  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) {
+    setCurrentThreadOptions({
+      series: [],
+      xAxis: { data: [] },
+      yAxis: { data: [] }
+    });
+    return;
+  }
 
   // 当前线程数折线图 - 以时间为横坐标
   const poolNames = Object.keys(props.timeSeriesData.poolData);

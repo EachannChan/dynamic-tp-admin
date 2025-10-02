@@ -192,20 +192,12 @@ public class MonThreadPoolController {
       // 直接向指定客户端请求线程池数据
       Object result = adminServer.requestToSpecificClient(clientAddress,
           AdminRequestTypeEnum.EXECUTOR_MONITOR, null);
-
-      if (result instanceof AdminRequestBody) {
-        Object responseBody = ((AdminRequestBody) result).getBody();
-        if (responseBody instanceof List) {
-          @SuppressWarnings("unchecked")
-          List<ThreadPoolStats> clientThreadPools = (List<ThreadPoolStats>) responseBody;
-          return Result.data(clientThreadPools);
-        }
-      } else if (result instanceof List) {
+      Object response = ((AdminRequestBody) result).getBody();
+      if (response instanceof List) {
         @SuppressWarnings("unchecked")
-        List<ThreadPoolStats> clientThreadPools = (List<ThreadPoolStats>) result;
+        List<ThreadPoolStats> clientThreadPools = (List<ThreadPoolStats>) response;
         return Result.data(clientThreadPools);
       }
-
       return Result.data(new ArrayList<>());
     } catch (Exception e) {
       log.error("获取客户端线程池数据失败，clientServiceName={}, clientAddress={}", clientServiceName, clientAddress, e);

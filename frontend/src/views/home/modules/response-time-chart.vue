@@ -13,7 +13,15 @@ const { domRef: responseTimeChartRef, setOptions: setResponseTimeOptions } = use
 
 // 更新图表
 function updateChart() {
-  if (!props.metrics.length) return;
+  // 如果没有数据，清空图表
+  if (!props.metrics.length) {
+    setResponseTimeOptions({
+      series: [],
+      xAxis: { data: [] },
+      yAxis: { data: [] }
+    });
+    return;
+  }
 
   // 响应时间百分位图表
   const responseTimeData = props.metrics.map((item: Api.Monitor.ThreadPoolMetrics) => ({

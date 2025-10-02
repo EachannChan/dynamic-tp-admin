@@ -401,9 +401,32 @@ function updateTimeSeriesData() {
 // 处理客户端切换
 function handleClientChange(client: any) {
   selectedClient.value = client;
-  // 不清空历史数据，保持图表连续性
+
+  // 清空当前显示的图表数据，避免显示其他客户端的数据
+  clearCurrentChartData();
+
   // 重新加载数据
   initData();
+}
+
+// 清空当前显示的图表数据
+function clearCurrentChartData() {
+  // 清空当前客户端的实时指标数据
+  metrics.value = [];
+
+  // 清空统计数据
+  statistics.value = undefined;
+
+  // 清空线程池列表
+  threadPools.value = [];
+
+  // 清空当前客户端的时间序列数据（但保留其他客户端的历史数据）
+  if (clientStore.selectedClientId) {
+    timeSeriesData.value[clientStore.selectedClientId] = {
+      timestamps: [],
+      poolData: {}
+    };
+  }
 }
 
 // 自动选择第一个可用的客户端

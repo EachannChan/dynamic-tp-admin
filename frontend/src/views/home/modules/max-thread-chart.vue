@@ -33,7 +33,15 @@ function processSpecialValue(value: number): number {
 
 // 更新图表
 function updateChart() {
-  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) return;
+  // 如果没有数据，清空图表
+  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) {
+    setMaxThreadOptions({
+      series: [],
+      xAxis: { data: [] },
+      yAxis: { data: [] }
+    });
+    return;
+  }
 
   // 最大线程数折线图 - 以时间为横坐标
   const poolNames = Object.keys(props.timeSeriesData.poolData);
@@ -43,6 +51,8 @@ function updateChart() {
     const poolData = props.timeSeriesData.poolData[poolName];
     const colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4'];
     const color = colors[index % colors.length];
+    const lineTypes = ['dashed', 'solid', 'dotted'];
+    const lineType = lineTypes[index % lineTypes.length];
 
     // 最大线程数
     series.push({
@@ -50,10 +60,18 @@ function updateChart() {
       type: 'line',
       data: poolData.maximumPoolSize.map((v) => processSpecialValue(v)),
       smooth: true,
-      lineStyle: { color, width: 3, type: 'dashed' },
-      itemStyle: { color },
+      lineStyle: {
+        color,
+        width: 3,
+        type: lineType
+      },
+      itemStyle: {
+        color,
+        borderWidth: 2,
+        borderColor: '#fff'
+      },
       symbol: 'diamond',
-      symbolSize: 6,
+      symbolSize: 8,
       areaStyle: {
         color: {
           type: 'linear',
@@ -62,7 +80,7 @@ function updateChart() {
           x2: 0,
           y2: 1,
           colorStops: [
-            { offset: 0, color: `${color}20` },
+            { offset: 0, color: `${color}15` },
             { offset: 1, color: `${color}05` }
           ]
         }
@@ -76,10 +94,10 @@ function updateChart() {
   const maxMaxThreadCount = Math.max(...allMaxThreadValues, 1); // 至少为1，避免高度为0
 
   // 根据数据范围动态计算图表高度
-  const baseHeight = 280; // 基础高度
-  const heightPerUnit = 8; // 每个线程数单位增加的高度
+  const baseHeight = 300; // 基础高度
+  const heightPerUnit = 2; // 每个线程数单位增加的高度（最大线程数通常较大）
   const maxHeight = 500; // 最大高度限制
-  const dynamicHeight = Math.min(baseHeight + maxMaxThreadCount * heightPerUnit, maxHeight);
+  const dynamicHeight = Math.min(baseHeight + Math.min(maxMaxThreadCount * heightPerUnit, 200), maxHeight);
 
   setMaxThreadOptions({
     tooltip: {
@@ -111,7 +129,13 @@ function updateChart() {
     legend: {
       data: series.map((s) => s.name),
       top: 20,
-      type: 'scroll'
+      left: 'center',
+      type: 'scroll',
+      itemWidth: 20,
+      itemHeight: 14,
+      textStyle: {
+        fontSize: 12
+      }
     },
     grid: {
       left: '3%',
@@ -133,8 +157,12 @@ function updateChart() {
       type: 'value',
       name: '最大线程数',
       minInterval: 1,
+      min: 0,
       // 根据数据范围设置合适的刻度
-      max: Math.ceil(maxMaxThreadCount * 1.1) // 留出10%的余量
+      max: Math.max(Math.ceil(maxMaxThreadCount * 1.2), 50), // 留出20%的余量，最小为50
+      axisLabel: {
+        formatter: '{value}'
+      }
     },
     series
   });

@@ -13,7 +13,15 @@ const { domRef: queueUsageChartRef, setOptions: setQueueUsageOptions } = useEcha
 
 // 更新图表
 function updateChart() {
-  if (!props.metrics.length) return;
+  // 如果没有数据，清空图表
+  if (!props.metrics.length) {
+    setQueueUsageOptions({
+      series: [],
+      xAxis: { data: [] },
+      yAxis: { data: [] }
+    });
+    return;
+  }
 
   // 队列使用情况图表
   const queueUsageData = props.metrics.map((item: Api.Monitor.ThreadPoolMetrics) => {

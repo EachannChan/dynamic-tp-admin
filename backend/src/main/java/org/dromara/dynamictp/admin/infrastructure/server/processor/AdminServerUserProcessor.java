@@ -31,6 +31,9 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     @Autowired(required = false)
     private PropertiesHandler propertiesHandler;
 
+    @Autowired
+    private ServerConnectProcessor serverConnectProcessor;
+
     private final ExecutorService executor;
 
     /**
@@ -108,7 +111,7 @@ public class AdminServerUserProcessor extends SyncUserProcessor<AdminRequestBody
     private Object handleExecutorRefreshRequest(BizContext bizContext, AdminRequestBody adminRequestBody) {
         String clientAddress = bizContext != null ? bizContext.getRemoteAddress() : "unknown";
         log.info("处理线程池刷新请求，客户端地址: {}", clientAddress);
-        return propertiesHandler.convertConfigsToMap(clientAddress);
+        return propertiesHandler.convertConfigsToMap(serverConnectProcessor.getClientServiceName(clientAddress));
     }
 
     private Object handleAlarmManageRequest(BizContext bizContext, AdminRequestBody adminRequestBody) {

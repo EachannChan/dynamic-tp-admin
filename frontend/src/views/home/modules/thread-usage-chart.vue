@@ -33,7 +33,15 @@ function processSpecialValue(value: number): number {
 
 // 更新图表
 function updateChart() {
-  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) return;
+  // 如果没有数据，清空图表
+  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) {
+    setThreadUsageOptions({
+      series: [],
+      xAxis: { data: [] },
+      yAxis: { data: [] }
+    });
+    return;
+  }
 
   // 线程使用情况折线图 - 以时间为横坐标
   const poolNames = Object.keys(props.timeSeriesData.poolData);
@@ -146,7 +154,7 @@ function updateChart() {
       }
     },
     legend: {
-      data: series.map(s => s.name),
+      data: series.map((s) => s.name),
       top: 50,
       type: 'scroll'
     },
@@ -198,7 +206,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <NCard title="线程池线程数变化趋势" :bordered="false" class="card-wrapper">
-    <div ref="threadUsageChartRef" class="min-h-80 transition-all duration-300" />
+  <NCard title="线程池线程数变化趋势"
+         :bordered="false"
+         class="card-wrapper">
+    <div ref="threadUsageChartRef"
+         class="min-h-80 transition-all duration-300" />
   </NCard>
 </template>

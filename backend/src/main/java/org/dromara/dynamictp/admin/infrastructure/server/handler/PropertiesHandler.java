@@ -16,8 +16,8 @@ public interface PropertiesHandler {
   /**
    * 将线程池配置转换为Map格式
    * 
-   * @param clientAddress 客户端地址
+   * @param clientServiceName 客户端服务名
    * @return 配置Map
    */
-  Map<Object, Object> convertConfigsToMap(String clientAddress);
+  Map<Object, Object> convertConfigsToMap(String clientServiceName);
 }

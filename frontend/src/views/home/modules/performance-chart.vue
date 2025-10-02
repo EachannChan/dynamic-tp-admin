@@ -28,7 +28,15 @@ const { domRef: performanceChartRef, setOptions: setPerformanceOptions } = useEc
 
 // 更新图表
 function updateChart() {
-  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) return;
+  // 如果没有数据，清空图表
+  if (!props.metrics.length || !props.timeSeriesData.timestamps.length) {
+    setPerformanceOptions({
+      series: [],
+      xAxis: { data: [] },
+      yAxis: [{ data: [] }, { data: [] }]
+    });
+    return;
+  }
 
   // 性能指标图表 - TPS和响应时间
   const poolNames = Object.keys(props.timeSeriesData.poolData);
